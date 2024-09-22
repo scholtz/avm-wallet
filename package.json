@@ -11,6 +11,7 @@
     "build": "pnpm build:packages && pnpm build:examples",
     "build:packages": "pnpm -r --filter 'avm-*' build",
     "build:examples": "pnpm -r --filter 'example-*' build",
+    "publish:packages": "pnpm -r --filter 'avm-*' publish",
     "watch": "pnpm -r --filter '*' --parallel start",
     "dev": "pnpm run watch",
     "test": "pnpm -r --if-present test",
