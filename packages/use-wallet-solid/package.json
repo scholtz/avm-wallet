@@ -1,5 +1,5 @@
 {
-  "name": "@txnlab/use-wallet-solid",
+  "name": "avm-wallet-solid",
   "version": "3.7.0",
   "description": "Solid.js library for integrating Algorand wallets into decentralized applications",
   "author": "Doug Richar <drichar@gmail.com>",

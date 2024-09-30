@@ -1,5 +1,5 @@
 {
-  "name": "@txnlab/use-wallet-vue",
+  "name": "avm-wallet-vue",
   "version": "3.7.0",
   "description": "Vue library for integrating Algorand wallets into decentralized applications",
   "author": "Doug Richar <drichar@gmail.com>",
