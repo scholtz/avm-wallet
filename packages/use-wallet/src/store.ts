@@ -12,6 +12,7 @@ export type WalletState = {
 export type WalletStateMap = Partial<Record<WalletId, WalletState>>
 
 export interface State {
+  avmWallet: boolean
   wallets: WalletStateMap
   activeWallet: WalletId | null
   activeNetwork: NetworkId
@@ -19,6 +20,7 @@ export interface State {
 }
 
 export const defaultState: State = {
+  avmWallet: true,
   wallets: {},
   activeWallet: null,
   activeNetwork: NetworkId.TESTNET,
