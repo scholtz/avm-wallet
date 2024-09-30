@@ -167,7 +167,7 @@ export class WalletManager {
   private savePersistedState(): void {
     try {
       const { wallets, activeWallet, activeNetwork } = this.store.state
-      const persistedState: PersistedState = { wallets, activeWallet, activeNetwork }
+      const persistedState: PersistedState = { avmWallet: true, wallets, activeWallet, activeNetwork }
       const serializedState = JSON.stringify(persistedState)
       StorageAdapter.setItem(LOCAL_STORAGE_KEY, serializedState)
     } catch (error) {
