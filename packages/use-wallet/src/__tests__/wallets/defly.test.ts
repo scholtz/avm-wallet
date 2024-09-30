@@ -178,7 +178,7 @@ describe('DeflyWallet', () => {
       // Set Pera as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.PERA
+        avmActiveWallet: WalletId.PERA
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -215,7 +215,7 @@ describe('DeflyWallet', () => {
       // Set Pera as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.PERA
+        avmActiveWallet: WalletId.PERA
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -235,7 +235,7 @@ describe('DeflyWallet', () => {
       // Set Defly as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -254,7 +254,7 @@ describe('DeflyWallet', () => {
       // Set Pera as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.PERA
+        avmActiveWallet: WalletId.PERA
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -275,7 +275,7 @@ describe('DeflyWallet', () => {
       // Set Defly as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -460,7 +460,7 @@ describe('DeflyWallet', () => {
       await wallet.connect()
       wallet.setActive()
 
-      expect(store.state.activeWallet).toBe(WalletId.DEFLY)
+      expect(store.state.avmActiveWallet).toBe(WalletId.DEFLY)
       expect(StorageAdapter.setItem).toHaveBeenCalledWith('walletconnect', mockWalletConnectData)
       expect(StorageAdapter.removeItem).toHaveBeenCalledWith(`walletconnect-${WalletId.DEFLY}`)
     })
@@ -471,7 +471,7 @@ describe('DeflyWallet', () => {
 
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.PERA,
+        avmActiveWallet: WalletId.PERA,
         wallets: {
           ...state.wallets,
           [WalletId.DEFLY]: { accounts: [account1], activeAccount: account1 },
@@ -485,7 +485,7 @@ describe('DeflyWallet', () => {
 
       expect(manageWalletConnectSessionSpy).toHaveBeenCalledWith('backup', WalletId.PERA)
       expect(manageWalletConnectSessionSpy).toHaveBeenCalledWith('restore')
-      expect(store.state.activeWallet).toBe(WalletId.DEFLY)
+      expect(store.state.avmActiveWallet).toBe(WalletId.DEFLY)
     })
   })
 

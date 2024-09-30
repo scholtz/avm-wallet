@@ -11,7 +11,7 @@ export function Connect() {
     activeAddress,
     activeNetwork,
     setActiveNetwork,
-    activeWalletId,
+    avmActiveWalletId,
     isWalletActive,
     isWalletConnected,
     transactionSigner,
@@ -115,7 +115,7 @@ export function Connect() {
           <div class="wallet-group">
             <h4>
               {wallet.metadata.name}{' '}
-              <Show when={wallet.id === activeWalletId()} fallback="">
+              <Show when={wallet.id === avmActiveWalletId()} fallback="">
                 [active]
               </Show>
             </h4>
@@ -164,7 +164,7 @@ export function Connect() {
               </div>
             </Show>
 
-            <Show when={wallet.id === activeWalletId() && wallet.accounts.length}>
+            <Show when={wallet.id === avmActiveWalletId() && wallet.accounts.length}>
               <div>
                 <select onChange={(event) => setActiveAccount(event, wallet)}>
                   <For each={wallet.accounts}>

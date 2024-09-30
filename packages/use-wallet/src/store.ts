@@ -14,7 +14,7 @@ export type WalletStateMap = Partial<Record<WalletId, WalletState>>
 export interface State {
   avmWallet: boolean
   wallets: WalletStateMap
-  activeWallet: WalletId | null
+  avmActiveWallet: WalletId | null
   activeNetwork: NetworkId
   algodClient: algosdk.Algodv2
 }
@@ -22,7 +22,7 @@ export interface State {
 export const defaultState: State = {
   avmWallet: true,
   wallets: {},
-  activeWallet: null,
+  avmActiveWallet: null,
   activeNetwork: NetworkId.TESTNET,
   algodClient: new algosdk.Algodv2('', 'https://testnet-api.4160.nodely.dev/')
 }
@@ -47,7 +47,7 @@ export function addWallet(
     return {
       ...state,
       wallets: updatedWallets,
-      activeWallet: walletId
+      avmActiveWallet: walletId
     }
   })
 }
@@ -60,7 +60,7 @@ export function removeWallet(store: Store<State>, { walletId }: { walletId: Wall
     return {
       ...state,
       wallets: updatedWallets,
-      activeWallet: state.activeWallet === walletId ? null : state.activeWallet
+      avmActiveWallet: state.avmActiveWallet === walletId ? null : state.avmActiveWallet
     }
   })
 }
@@ -68,7 +68,7 @@ export function removeWallet(store: Store<State>, { walletId }: { walletId: Wall
 export function setActiveWallet(store: Store<State>, { walletId }: { walletId: WalletId | null }) {
   store.setState((state) => ({
     ...state,
-    activeWallet: walletId
+    avmActiveWallet: walletId
   }))
 }
 
@@ -188,7 +188,7 @@ export function isValidState(state: any): state is State {
   for (const [walletId, wallet] of Object.entries(state.wallets)) {
     if (!isValidWalletId(walletId) || !isValidWalletState(wallet)) return false
   }
-  if (state.activeWallet !== null && !isValidWalletId(state.activeWallet)) return false
+  if (state.avmActiveWallet !== null && !isValidWalletId(state.avmActiveWallet)) return false
   if (!isValidNetworkId(state.activeNetwork)) return false
 
   return true

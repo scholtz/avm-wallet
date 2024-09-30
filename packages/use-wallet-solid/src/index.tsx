@@ -63,22 +63,22 @@ export function useWallet() {
 
   const walletState = (walletId: WalletId): WalletState | null => walletStore()[walletId] || null
 
-  const activeWalletId = useStore(manager().store, (state) => state.activeWallet)
+  const avmActiveWalletId = useStore(manager().store, (state) => state.avmActiveWallet)
 
-  const activeWallet = () => manager().getWallet(activeWalletId() as WalletId) || null
+  const avmActiveWallet = () => manager().getWallet(avmActiveWalletId() as WalletId) || null
 
-  const activeWalletState = () => walletState(activeWalletId() as WalletId)
+  const avmActiveWalletState = () => walletState(avmActiveWalletId() as WalletId)
 
-  const activeWalletAccounts = () => activeWalletState()?.accounts ?? null
+  const avmActiveWalletAccounts = () => avmActiveWalletState()?.accounts ?? null
 
-  const activeWalletAddresses = () =>
-    activeWalletAccounts()?.map((account) => account.address) ?? null
+  const avmActiveWalletAddresses = () =>
+    avmActiveWalletAccounts()?.map((account) => account.address) ?? null
 
-  const activeAccount = () => activeWalletState()?.activeAccount ?? null
+  const activeAccount = () => avmActiveWalletState()?.activeAccount ?? null
 
   const activeAddress = () => activeAccount()?.address ?? null
 
-  const isWalletActive = (walletId: WalletId) => walletId === activeWalletId()
+  const isWalletActive = (walletId: WalletId) => walletId === avmActiveWalletId()
   const isWalletConnected = (walletId: WalletId) =>
     !!walletState(walletId)?.accounts.length || false
 
@@ -107,7 +107,7 @@ export function useWallet() {
     txnGroup: T | T[],
     indexesToSign?: number[]
   ): Promise<(Uint8Array | null)[]> => {
-    const wallet = activeWallet()
+    const wallet = avmActiveWallet()
     if (!wallet) {
       throw new Error('No active wallet')
     }
@@ -118,7 +118,7 @@ export function useWallet() {
     txnGroup: algosdk.Transaction[],
     indexesToSign: number[]
   ): Promise<Uint8Array[]> => {
-    const wallet = activeWallet()
+    const wallet = avmActiveWallet()
     if (!wallet) {
       throw new Error('No active wallet')
     }
@@ -126,14 +126,14 @@ export function useWallet() {
   }
 
   return {
-    activeWalletId,
+    avmActiveWalletId,
     walletStore,
     algodClient,
     activeNetwork,
-    activeWallet,
-    activeWalletAccounts,
-    activeWalletAddresses,
-    activeWalletState,
+    avmActiveWallet,
+    avmActiveWalletAccounts,
+    avmActiveWalletAddresses,
+    avmActiveWalletState,
     activeAccount,
     activeAddress,
     isWalletActive,

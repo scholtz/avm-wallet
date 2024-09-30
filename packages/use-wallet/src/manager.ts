@@ -166,8 +166,8 @@ export class WalletManager {
 
   private savePersistedState(): void {
     try {
-      const { wallets, activeWallet, activeNetwork } = this.store.state
-      const persistedState: PersistedState = { avmWallet: true, wallets, activeWallet, activeNetwork }
+      const { wallets, avmActiveWallet, activeNetwork } = this.store.state
+      const persistedState: PersistedState = { avmWallet: true, wallets, avmActiveWallet, activeNetwork }
       const serializedState = JSON.stringify(persistedState)
       StorageAdapter.setItem(LOCAL_STORAGE_KEY, serializedState)
     } catch (error) {
@@ -231,8 +231,8 @@ export class WalletManager {
     }
 
     // Check if active wallet is still valid
-    if (state.activeWallet && !this._clients.has(state.activeWallet)) {
-      this.logger.warn(`Active wallet not found: ${state.activeWallet}`)
+    if (state.avmActiveWallet && !this._clients.has(state.avmActiveWallet)) {
+      this.logger.warn(`Active wallet not found: ${state.avmActiveWallet}`)
       setActiveWallet(this.store, { walletId: null })
     }
   }
@@ -305,35 +305,35 @@ export class WalletManager {
 
   // ---------- Active Wallet ----------------------------------------- //
 
-  public get activeWallet(): BaseWallet | null {
+  public get avmActiveWallet(): BaseWallet | null {
     const state = this.store.state
-    const activeWallet = this.wallets.find((wallet) => wallet.id === state.activeWallet)
-    if (!activeWallet) {
+    const avmActiveWallet = this.wallets.find((wallet) => wallet.id === state.avmActiveWallet)
+    if (!avmActiveWallet) {
       return null
     }
 
-    return activeWallet
+    return avmActiveWallet
   }
 
-  public get activeWalletAccounts(): WalletAccount[] | null {
-    if (!this.activeWallet) {
+  public get avmActiveWalletAccounts(): WalletAccount[] | null {
+    if (!this.avmActiveWallet) {
       return null
     }
-    return this.activeWallet.accounts
+    return this.avmActiveWallet.accounts
   }
 
-  public get activeWalletAddresses(): string[] | null {
-    if (!this.activeWallet) {
+  public get avmActiveWalletAddresses(): string[] | null {
+    if (!this.avmActiveWallet) {
       return null
     }
-    return this.activeWallet.accounts.map((account) => account.address)
+    return this.avmActiveWallet.accounts.map((account) => account.address)
   }
 
   public get activeAccount(): WalletAccount | null {
-    if (!this.activeWallet) {
+    if (!this.avmActiveWallet) {
       return null
     }
-    return this.activeWallet.activeAccount
+    return this.avmActiveWallet.activeAccount
   }
 
   public get activeAddress(): string | null {
@@ -346,18 +346,18 @@ export class WalletManager {
   // ---------- Sign Transactions ------------------------------------- //
 
   public get signTransactions(): BaseWallet['signTransactions'] {
-    if (!this.activeWallet) {
+    if (!this.avmActiveWallet) {
       this.logger.error('No active wallet found!')
       throw new Error('No active wallet found!')
     }
-    return this.activeWallet.signTransactions
+    return this.avmActiveWallet.signTransactions
   }
 
   public get transactionSigner(): algosdk.TransactionSigner {
-    if (!this.activeWallet) {
+    if (!this.avmActiveWallet) {
       this.logger.error('No active wallet found!')
       throw new Error('No active wallet found!')
     }
-    return this.activeWallet.transactionSigner
+    return this.avmActiveWallet.transactionSigner
   }
 }

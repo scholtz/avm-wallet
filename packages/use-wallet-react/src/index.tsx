@@ -57,7 +57,7 @@ export const useWallet = () => {
   }
 
   const walletStateMap = useStore(manager.store, (state) => state.wallets)
-  const activeWalletId = useStore(manager.store, (state) => state.activeWallet)
+  const avmActiveWalletId = useStore(manager.store, (state) => state.avmActiveWallet)
 
   const wallets = React.useMemo(() => {
     return [...manager.wallets.values()].map((wallet): Wallet => {
@@ -69,50 +69,50 @@ export const useWallet = () => {
         accounts: walletState?.accounts ?? [],
         activeAccount: walletState?.activeAccount ?? null,
         isConnected: !!walletState,
-        isActive: wallet.id === activeWalletId,
+        isActive: wallet.id === avmActiveWalletId,
         connect: (args) => wallet.connect(args),
         disconnect: () => wallet.disconnect(),
         setActive: () => wallet.setActive(),
         setActiveAccount: (addr) => wallet.setActiveAccount(addr)
       }
     })
-  }, [manager, walletStateMap, activeWalletId])
+  }, [manager, walletStateMap, avmActiveWalletId])
 
-  const activeWallet = activeWalletId ? manager.getWallet(activeWalletId) || null : null
-  const activeWalletState = activeWalletId ? walletStateMap[activeWalletId] || null : null
+  const avmActiveWallet = avmActiveWalletId ? manager.getWallet(avmActiveWalletId) || null : null
+  const avmActiveWalletState = avmActiveWalletId ? walletStateMap[avmActiveWalletId] || null : null
 
-  const activeWalletAccounts = activeWalletState?.accounts ?? null
-  const activeWalletAddresses = activeWalletAccounts?.map((account) => account.address) ?? null
-  const activeAccount = activeWalletState?.activeAccount ?? null
+  const avmActiveWalletAccounts = avmActiveWalletState?.accounts ?? null
+  const avmActiveWalletAddresses = avmActiveWalletAccounts?.map((account) => account.address) ?? null
+  const activeAccount = avmActiveWalletState?.activeAccount ?? null
   const activeAddress = activeAccount?.address ?? null
 
   const signTransactions = <T extends algosdk.Transaction[] | Uint8Array[]>(
     txnGroup: T | T[],
     indexesToSign?: number[]
   ): Promise<(Uint8Array | null)[]> => {
-    if (!activeWallet) {
+    if (!avmActiveWallet) {
       throw new Error('No active wallet')
     }
-    return activeWallet.signTransactions(txnGroup, indexesToSign)
+    return avmActiveWallet.signTransactions(txnGroup, indexesToSign)
   }
 
   const transactionSigner = (
     txnGroup: algosdk.Transaction[],
     indexesToSign: number[]
   ): Promise<Uint8Array[]> => {
-    if (!activeWallet) {
+    if (!avmActiveWallet) {
       throw new Error('No active wallet')
     }
-    return activeWallet.transactionSigner(txnGroup, indexesToSign)
+    return avmActiveWallet.transactionSigner(txnGroup, indexesToSign)
   }
 
   return {
     wallets,
     algodClient,
     activeNetwork,
-    activeWallet,
-    activeWalletAccounts,
-    activeWalletAddresses,
+    avmActiveWallet,
+    avmActiveWalletAccounts,
+    avmActiveWalletAddresses,
     activeAccount,
     activeAddress,
     setActiveNetwork,

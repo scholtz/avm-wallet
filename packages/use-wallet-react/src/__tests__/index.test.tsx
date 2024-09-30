@@ -224,7 +224,7 @@ describe('useWallet', () => {
     const { result } = renderHook(() => useWallet(), { wrapper })
 
     expect(result.current.wallets).toEqual(mockWallets)
-    expect(result.current.activeWallet).toBeNull()
+    expect(result.current.avmActiveWallet).toBeNull()
     expect(result.current.activeAccount).toBeNull()
     expect(result.current.activeNetwork).toBe(NetworkId.TESTNET)
   })
@@ -288,7 +288,7 @@ describe('useWallet', () => {
             }
           }
         },
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
     })
 
@@ -327,7 +327,7 @@ describe('useWallet', () => {
             }
           }
         },
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
     })
 
@@ -360,9 +360,9 @@ describe('useWallet', () => {
       const {
         wallets,
         activeNetwork,
-        activeWallet,
-        activeWalletAccounts,
-        activeWalletAddresses,
+        avmActiveWallet,
+        avmActiveWalletAccounts,
+        avmActiveWalletAddresses,
         activeAccount,
         activeAddress
       } = useWallet()
@@ -375,12 +375,12 @@ describe('useWallet', () => {
             ))}
           </ul>
           <div data-testid="active-network">Active Network: {JSON.stringify(activeNetwork)}</div>
-          <div data-testid="active-wallet">Active Wallet: {JSON.stringify(activeWallet)}</div>
+          <div data-testid="active-wallet">Active Wallet: {JSON.stringify(avmActiveWallet)}</div>
           <div data-testid="active-wallet-accounts">
-            Active Wallet Accounts: {JSON.stringify(activeWalletAccounts)}
+            Active Wallet Accounts: {JSON.stringify(avmActiveWalletAccounts)}
           </div>
           <div data-testid="active-wallet-addresses">
-            Active Wallet Addresses: {JSON.stringify(activeWalletAddresses)}
+            Active Wallet Addresses: {JSON.stringify(avmActiveWalletAddresses)}
           </div>
           <div data-testid="active-account">Active Account: {JSON.stringify(activeAccount)}</div>
           <div data-testid="active-address">Active Address: {JSON.stringify(activeAddress)}</div>
@@ -425,7 +425,7 @@ describe('useWallet', () => {
             }
           }
         },
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
     })
 

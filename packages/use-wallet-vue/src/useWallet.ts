@@ -51,7 +51,7 @@ export function useWallet() {
   }
 
   const walletStateMap = useStore(manager.store, (state) => state.wallets)
-  const activeWalletId = useStore(manager.store, (state) => state.activeWallet)
+  const avmActiveWalletId = useStore(manager.store, (state) => state.avmActiveWallet)
 
   const wallets = computed(() => {
     return [...manager.wallets.values()].map((wallet): Wallet => {
@@ -63,7 +63,7 @@ export function useWallet() {
         accounts: walletState?.accounts ?? [],
         activeAccount: walletState?.activeAccount ?? null,
         isConnected: !!walletState,
-        isActive: wallet.id === activeWalletId.value,
+        isActive: wallet.id === avmActiveWalletId.value,
         connect: (args) => wallet.connect(args),
         disconnect: () => wallet.disconnect(),
         setActive: () => wallet.setActive(),
@@ -72,25 +72,25 @@ export function useWallet() {
     })
   })
 
-  const activeWallet = computed(() => {
-    return activeWalletId.value ? manager.getWallet(activeWalletId.value) || null : null
+  const avmActiveWallet = computed(() => {
+    return avmActiveWalletId.value ? manager.getWallet(avmActiveWalletId.value) || null : null
   })
 
-  const activeWalletState = computed(() => {
-    const wallet = activeWallet.value
+  const avmActiveWalletState = computed(() => {
+    const wallet = avmActiveWallet.value
     return wallet ? walletStateMap.value[wallet.id] || null : null
   })
 
-  const activeWalletAccounts = computed(() => {
-    return activeWalletState.value?.accounts ?? null
+  const avmActiveWalletAccounts = computed(() => {
+    return avmActiveWalletState.value?.accounts ?? null
   })
 
-  const activeWalletAddresses = computed(() => {
-    return activeWalletAccounts.value?.map((account) => account.address) ?? null
+  const avmActiveWalletAddresses = computed(() => {
+    return avmActiveWalletAccounts.value?.map((account) => account.address) ?? null
   })
 
   const activeAccount = computed(() => {
-    return activeWalletState.value?.activeAccount ?? null
+    return avmActiveWalletState.value?.activeAccount ?? null
   })
 
   const activeAddress = computed(() => {
@@ -101,20 +101,20 @@ export function useWallet() {
     txnGroup: T | T[],
     indexesToSign?: number[]
   ): Promise<(Uint8Array | null)[]> => {
-    if (!activeWallet.value) {
+    if (!avmActiveWallet.value) {
       throw new Error('No active wallet')
     }
-    return activeWallet.value.signTransactions(txnGroup, indexesToSign)
+    return avmActiveWallet.value.signTransactions(txnGroup, indexesToSign)
   }
 
   const transactionSigner = (
     txnGroup: algosdk.Transaction[],
     indexesToSign: number[]
   ): Promise<Uint8Array[]> => {
-    if (!activeWallet.value) {
+    if (!avmActiveWallet.value) {
       throw new Error('No active wallet')
     }
-    return activeWallet.value.transactionSigner(txnGroup, indexesToSign)
+    return avmActiveWallet.value.transactionSigner(txnGroup, indexesToSign)
   }
 
   return {
@@ -126,9 +126,9 @@ export function useWallet() {
       return algodClient.value
     }),
     activeNetwork,
-    activeWallet,
-    activeWalletAccounts,
-    activeWalletAddresses,
+    avmActiveWallet,
+    avmActiveWalletAccounts,
+    avmActiveWalletAddresses,
     activeAccount,
     activeAddress,
     setActiveNetwork,

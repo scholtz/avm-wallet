@@ -59,11 +59,11 @@ const TestComponent = () => {
     activeAccount,
     activeAddress,
     activeNetwork,
-    activeWallet,
-    activeWalletAccounts,
-    activeWalletAddresses,
-    activeWalletId,
-    activeWalletState,
+    avmActiveWallet,
+    avmActiveWalletAccounts,
+    avmActiveWalletAddresses,
+    avmActiveWalletId,
+    avmActiveWalletState,
     setActiveNetwork,
     isWalletActive,
     isWalletConnected,
@@ -86,13 +86,13 @@ const TestComponent = () => {
       <div data-testid="active-account">{JSON.stringify(activeAccount())}</div>
       <div data-testid="active-address">{JSON.stringify(activeAddress())}</div>
       <div data-testid="active-network">{activeNetwork()}</div>
-      <div data-testid="active-wallet">{JSON.stringify(activeWallet()?.id || 'null')}</div>
-      <div data-testid="active-wallet-accounts">{JSON.stringify(activeWalletAccounts())}</div>
+      <div data-testid="active-wallet">{JSON.stringify(avmActiveWallet()?.id || 'null')}</div>
+      <div data-testid="active-wallet-accounts">{JSON.stringify(avmActiveWalletAccounts())}</div>
       <div data-testid="active-wallet-addresses">
-        {activeWalletAddresses()?.join(', ') || 'null'}
+        {avmActiveWalletAddresses()?.join(', ') || 'null'}
       </div>
-      <div data-testid="active-wallet-id">{JSON.stringify(activeWalletId())}</div>
-      <div data-testid="active-wallet-state">{JSON.stringify(activeWalletState())}</div>
+      <div data-testid="active-wallet-id">{JSON.stringify(avmActiveWalletId())}</div>
+      <div data-testid="active-wallet-state">{JSON.stringify(avmActiveWalletState())}</div>
       <div data-testid="wallet-store">{JSON.stringify(walletStore())}</div>
       <div data-testid="wallets">{wallets.map((wallet) => wallet.id).join(', ')}</div>
       <div data-testid="algod-client">{JSON.stringify(algodClient())}</div>
@@ -189,7 +189,7 @@ describe('useWallet', () => {
 
     const defaultState = {
       wallets: {},
-      activeWallet: null,
+      avmActiveWallet: null,
       activeNetwork: NetworkId.TESTNET,
       algodClient: new algosdk.Algodv2('', 'https://testnet-api.4160.nodely.dev/')
     }
@@ -291,7 +291,7 @@ describe('useWallet', () => {
           activeAccount: testAccount2
         }
       },
-      activeWallet: WalletId.DEFLY
+      avmActiveWallet: WalletId.DEFLY
     }))
 
     // Trigger disconnect
@@ -339,7 +339,7 @@ describe('useWallet', () => {
           activeAccount: testAccount1
         }
       },
-      activeWallet: WalletId.DEFLY
+      avmActiveWallet: WalletId.DEFLY
     }))
 
     const setActiveButton = screen.getByTestId('set-active-btn-magic')
@@ -348,7 +348,7 @@ describe('useWallet', () => {
 
     mockStore.setState((state) => ({
       ...state,
-      activeWallet: WalletId.MAGIC
+      avmActiveWallet: WalletId.MAGIC
     }))
 
     const setActiveAccountButton = screen.getByTestId('set-active-account-btn-magic')
@@ -433,7 +433,7 @@ describe('useWallet', () => {
           activeAccount: testAccount2
         }
       },
-      activeWallet: WalletId.DEFLY
+      avmActiveWallet: WalletId.DEFLY
     }))
 
     const signTransactionsButton = screen.getByTestId('sign-transactions-btn-defly')
@@ -480,7 +480,7 @@ describe('useWallet', () => {
           activeAccount: testAccount2
         }
       },
-      activeWallet: WalletId.DEFLY
+      avmActiveWallet: WalletId.DEFLY
     }))
 
     expect(screen.getByTestId('active-account')).toHaveTextContent(JSON.stringify(testAccount2))
@@ -518,7 +518,7 @@ describe('useWallet', () => {
           activeAccount: testAccount1
         }
       },
-      activeWallet: WalletId.MAGIC
+      avmActiveWallet: WalletId.MAGIC
     }))
 
     expect(screen.getByTestId('wallet-status-defly')).toHaveTextContent('Connected')

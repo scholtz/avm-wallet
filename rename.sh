@@ -18,3 +18,6 @@ sed -i -e 's~@biatec/~~g' CONTRIBUTING.md
 sed -i -e 's~TxnLab Inc.~TxnLab Inc., Scholtz \& Company, jsa~g' -e 's~Scholtz \& Company, jsa, Scholtz \& Company, jsa~Scholtz \& Company, jsa~g' LICENSE.md
 
 find examples -type f -name "*" -print0 | xargs -0 sed -i -e "s~avm-wallet-example~example-avm-wallet~g"
+
+find . -type f -name "*" -print0 | xargs -0 sed -i -e "s~activeWallet~avmActiveWallet~g"
+

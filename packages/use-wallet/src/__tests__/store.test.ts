@@ -50,7 +50,7 @@ describe('Mutations', () => {
 
       const state = store.state
       expect(state.wallets[walletId]).toEqual(walletState)
-      expect(state.activeWallet).toBe(walletId)
+      expect(state.avmActiveWallet).toBe(walletId)
     })
 
     it('should create new object references when adding a wallet', () => {
@@ -121,7 +121,7 @@ describe('Mutations', () => {
             }
           }
         },
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       })
     })
 
@@ -129,18 +129,18 @@ describe('Mutations', () => {
       const walletId = WalletId.DEFLY
 
       expect(store.state.wallets[walletId]).toBeDefined()
-      expect(store.state.activeWallet).toBe(walletId)
+      expect(store.state.avmActiveWallet).toBe(walletId)
 
       removeWallet(store, { walletId })
       expect(store.state.wallets[walletId]).toBeUndefined()
 
       // Active wallet should be null
-      expect(store.state.activeWallet).toBeNull()
+      expect(store.state.avmActiveWallet).toBeNull()
     })
 
     it('should remove a non-active wallet', () => {
       const walletId = WalletId.PERA
-      const activeWallet = store.state.activeWallet
+      const avmActiveWallet = store.state.avmActiveWallet
 
       expect(store.state.wallets[walletId]).toBeDefined()
 
@@ -148,12 +148,12 @@ describe('Mutations', () => {
       expect(store.state.wallets[walletId]).toBeUndefined()
 
       // Active wallet should not change
-      expect(store.state.activeWallet).toBe(activeWallet)
+      expect(store.state.avmActiveWallet).toBe(avmActiveWallet)
     })
 
     it('should do nothing if walletId is not in wallets map', () => {
       const walletId = WalletId.EXODUS
-      const activeWallet = store.state.activeWallet
+      const avmActiveWallet = store.state.avmActiveWallet
 
       expect(Object.keys(store.state.wallets).length).toBe(2)
       expect(store.state.wallets[walletId]).toBeUndefined()
@@ -165,7 +165,7 @@ describe('Mutations', () => {
       expect(Object.keys(store.state.wallets).length).toBe(2)
 
       // Active wallet should not change
-      expect(store.state.activeWallet).toBe(activeWallet)
+      expect(store.state.avmActiveWallet).toBe(avmActiveWallet)
     })
   })
 
@@ -173,7 +173,7 @@ describe('Mutations', () => {
     // @todo: Should fail if walletId is not in wallets map
     it('should set the active wallet', () => {
       setActiveWallet(store, { walletId: WalletId.DEFLY })
-      expect(store.state.activeWallet).toBe(WalletId.DEFLY)
+      expect(store.state.avmActiveWallet).toBe(WalletId.DEFLY)
     })
 
     it('should set the active wallet to null', () => {
@@ -192,10 +192,10 @@ describe('Mutations', () => {
           }
         }
       })
-      expect(store.state.activeWallet).toBe(WalletId.DEFLY)
+      expect(store.state.avmActiveWallet).toBe(WalletId.DEFLY)
 
       setActiveWallet(store, { walletId: null })
-      expect(store.state.activeWallet).toBeNull()
+      expect(store.state.avmActiveWallet).toBeNull()
     })
   })
 
@@ -564,7 +564,7 @@ describe('Type Guards', () => {
     it('returns true for a valid state', () => {
       const defaultState: State = {
         wallets: {},
-        activeWallet: null,
+        avmActiveWallet: null,
         activeNetwork: NetworkId.TESTNET,
         algodClient: new Algodv2('', 'https://testnet-api.4160.nodely.dev/')
       }
@@ -601,7 +601,7 @@ describe('Type Guards', () => {
             }
           }
         },
-        activeWallet: WalletId.DEFLY,
+        avmActiveWallet: WalletId.DEFLY,
         activeNetwork: NetworkId.TESTNET,
         algodClient: new Algodv2('', 'https://testnet-api.4160.nodely.dev/')
       }
@@ -614,7 +614,7 @@ describe('Type Guards', () => {
 
       expect(
         isValidState({
-          activeWallet: WalletId.DEFLY,
+          avmActiveWallet: WalletId.DEFLY,
           activeNetwork: NetworkId.TESTNET
         })
       ).toBe(false)
@@ -629,7 +629,7 @@ describe('Type Guards', () => {
       expect(
         isValidState({
           wallets: {},
-          activeWallet: WalletId.DEFLY
+          avmActiveWallet: WalletId.DEFLY
         })
       ).toBe(false)
     })

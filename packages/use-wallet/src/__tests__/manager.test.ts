@@ -291,7 +291,7 @@ describe('WalletManager', () => {
             }
           }
         },
-        activeWallet: WalletId.KIBISIS,
+        avmActiveWallet: WalletId.KIBISIS,
         activeNetwork: NetworkId.BETANET,
         algodClient: new algosdk.Algodv2('', 'https://betanet-api.4160.nodely.dev/')
       }
@@ -302,7 +302,7 @@ describe('WalletManager', () => {
         wallets: [WalletId.DEFLY, WalletId.KIBISIS]
       })
       // expect(manager.store.state).toEqual(mockInitialState)
-      expect(manager.activeWallet?.id).toBe(WalletId.KIBISIS)
+      expect(manager.avmActiveWallet?.id).toBe(WalletId.KIBISIS)
       expect(manager.activeNetwork).toBe(NetworkId.BETANET)
     })
 
@@ -315,7 +315,7 @@ describe('WalletManager', () => {
 
       // Store initializes with default state if null is returned
       expect(manager.store.state).toEqual(defaultState)
-      expect(manager.activeWallet).toBeNull()
+      expect(manager.avmActiveWallet).toBeNull()
       expect(manager.activeNetwork).toBe(NetworkId.TESTNET)
     })
 
@@ -340,7 +340,7 @@ describe('WalletManager', () => {
     it('saves state to local storage', async () => {
       const stateToSave: Omit<State, 'algodClient'> = {
         wallets: {},
-        activeWallet: null,
+        avmActiveWallet: null,
         activeNetwork: NetworkId.MAINNET
       }
 
@@ -356,7 +356,7 @@ describe('WalletManager', () => {
     })
   })
 
-  describe('activeWallet', () => {
+  describe('avmActiveWallet', () => {
     beforeEach(() => {
       mockInitialState = {
         wallets: {
@@ -377,7 +377,7 @@ describe('WalletManager', () => {
             }
           }
         },
-        activeWallet: WalletId.KIBISIS,
+        avmActiveWallet: WalletId.KIBISIS,
         activeNetwork: NetworkId.BETANET,
         algodClient: new algosdk.Algodv2('', 'https://betanet-api.4160.nodely.dev/')
       }
@@ -387,7 +387,7 @@ describe('WalletManager', () => {
       const manager = new WalletManager({
         wallets: [WalletId.DEFLY, WalletId.KIBISIS]
       })
-      expect(manager.activeWallet?.id).toBe(WalletId.KIBISIS)
+      expect(manager.avmActiveWallet?.id).toBe(WalletId.KIBISIS)
     })
 
     it('returns null if no active wallet', () => {
@@ -396,15 +396,15 @@ describe('WalletManager', () => {
       const manager = new WalletManager({
         wallets: [WalletId.DEFLY, WalletId.KIBISIS]
       })
-      expect(manager.activeWallet).toBeNull()
+      expect(manager.avmActiveWallet).toBeNull()
     })
 
     it('returns active wallet accounts', () => {
       const manager = new WalletManager({
         wallets: [WalletId.DEFLY, WalletId.KIBISIS]
       })
-      expect(manager.activeWalletAccounts?.length).toBe(2)
-      expect(manager.activeWalletAddresses).toEqual([
+      expect(manager.avmActiveWalletAccounts?.length).toBe(2)
+      expect(manager.avmActiveWalletAddresses).toEqual([
         '7ZUECA7HFLZTXENRV24SHLU4AVPUTMTTDUFUBNBD64C73F3UHRTHAIOF6Q',
         'N2C374IRX7HEX2YEQWJBTRSVRHRUV4ZSF76S54WV4COTHRUNYRCI47R3WU'
       ])
@@ -416,7 +416,7 @@ describe('WalletManager', () => {
       })
       expect(manager.wallets.length).toBe(1)
       expect(manager.wallets[0]?.id).toBe(WalletId.DEFLY)
-      expect(manager.activeWallet).toBeNull()
+      expect(manager.avmActiveWallet).toBeNull()
     })
   })
 
@@ -523,7 +523,7 @@ describe('WalletManager', () => {
       it('uses the default network when resetNetwork is true, ignoring persisted state', () => {
         mockInitialState = {
           wallets: {},
-          activeWallet: null,
+          avmActiveWallet: null,
           activeNetwork: NetworkId.MAINNET,
           algodClient: new algosdk.Algodv2('', 'https://mainnet-api.algonode.cloud')
         }
@@ -540,7 +540,7 @@ describe('WalletManager', () => {
       it('uses the persisted network when resetNetwork is false', () => {
         mockInitialState = {
           wallets: {},
-          activeWallet: null,
+          avmActiveWallet: null,
           activeNetwork: NetworkId.MAINNET,
           algodClient: new algosdk.Algodv2('', 'https://mainnet-api.algonode.cloud')
         }
@@ -572,7 +572,7 @@ describe('WalletManager', () => {
               activeAccount: { name: 'Account 1', address: 'address1' }
             }
           },
-          activeWallet: WalletId.PERA,
+          avmActiveWallet: WalletId.PERA,
           activeNetwork: NetworkId.MAINNET,
           algodClient: new algosdk.Algodv2('', 'https://mainnet-api.algonode.cloud')
         }
@@ -591,7 +591,7 @@ describe('WalletManager', () => {
           accounts: [{ name: 'Account 1', address: 'address1' }],
           activeAccount: { name: 'Account 1', address: 'address1' }
         })
-        expect(manager.store.state.activeWallet).toBe(WalletId.PERA)
+        expect(manager.store.state.avmActiveWallet).toBe(WalletId.PERA)
       })
     })
   })
