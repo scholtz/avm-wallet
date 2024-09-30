@@ -1,5 +1,5 @@
 import algosdk from 'algosdk'
-import { WalletState, addWallet, type State } from 'src/store'
+import { WalletAVMState, addWallet, type AVMState } from 'src/store'
 import { flattenTxnGroup, isSignedTxn, isTransactionArray } from 'src/utils'
 import { BaseWallet } from 'src/wallets/base'
 import type { Store } from '@tanstack/store'
@@ -62,7 +62,7 @@ export class KmdWallet extends BaseWallet {
   private walletId: string = ''
   private password: string = ''
 
-  protected store: Store<State>
+  protected store: Store<AVMState>
 
   constructor({
     id,
@@ -123,20 +123,20 @@ export class KmdWallet extends BaseWallet {
 
       const activeAccount = walletAccounts[0]
 
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: walletAccounts,
         activeAccount
       }
 
       addWallet(this.store, {
         walletId: this.id,
-        wallet: walletState
+        wallet: walletAVMState
       })
 
       // Release token
       await this.releaseToken(token)
 
-      this.logger.info('✅ Connected.', walletState)
+      this.logger.info('✅ Connected.', walletAVMState)
       return walletAccounts
     } catch (error: any) {
       this.logger.error('Error connecting:', error.message)
@@ -153,10 +153,10 @@ export class KmdWallet extends BaseWallet {
   public resumeSession = async (): Promise<void> => {
     try {
       const state = this.store.state
-      const walletState = state.wallets[this.id]
+      const walletAVMState = state.wallets[this.id]
 
       // No session to resume
-      if (!walletState) {
+      if (!walletAVMState) {
         this.logger.info('No session to resume')
         return
       }

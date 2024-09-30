@@ -1,5 +1,5 @@
 import algosdk from 'algosdk'
-import { WalletState, addWallet, setAccounts, type State } from 'src/store'
+import { WalletAVMState, addWallet, setAccounts, type AVMState } from 'src/store'
 import {
   base64ToByteArray,
   byteArrayToBase64,
@@ -45,7 +45,7 @@ export class MagicAuth extends BaseWallet {
   private client: MagicAuthClient | null = null
   private options: MagicAuthOptions
 
-  protected store: Store<State>
+  protected store: Store<AVMState>
   public userInfo: MagicUserMetadata | null = null
 
   constructor({
@@ -120,17 +120,17 @@ export class MagicAuth extends BaseWallet {
       address: userInfo.publicAddress
     }
 
-    const walletState: WalletState = {
+    const walletAVMState: WalletAVMState = {
       accounts: [walletAccount],
       activeAccount: walletAccount
     }
 
     addWallet(this.store, {
       walletId: this.id,
-      wallet: walletState
+      wallet: walletAVMState
     })
 
-    this.logger.info('Connected successfully', walletState)
+    this.logger.info('Connected successfully', walletAVMState)
     return [walletAccount]
   }
 
@@ -146,10 +146,10 @@ export class MagicAuth extends BaseWallet {
   public resumeSession = async (): Promise<void> => {
     try {
       const state = this.store.state
-      const walletState = state.wallets[this.id]
+      const walletAVMState = state.wallets[this.id]
 
       // No session to resume
-      if (!walletState) {
+      if (!walletAVMState) {
         this.logger.info('No session to resume')
         return
       }
@@ -185,7 +185,7 @@ export class MagicAuth extends BaseWallet {
         address: userInfo.publicAddress
       }
 
-      const storedAccount = walletState.accounts[0]
+      const storedAccount = walletAVMState.accounts[0]
 
       const { name, address } = walletAccount
       const { name: storedName, address: storedAddress } = storedAccount

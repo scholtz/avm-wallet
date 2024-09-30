@@ -1,5 +1,5 @@
 import algosdk from 'algosdk'
-import { WalletState, addWallet, type State } from 'src/store'
+import { WalletAVMState, addWallet, type AVMState } from 'src/store'
 import {
   base64ToByteArray,
   byteArrayToBase64,
@@ -82,7 +82,7 @@ export class ExodusWallet extends BaseWallet {
   private client: Exodus | null = null
   private options: ExodusOptions
 
-  protected store: Store<State>
+  protected store: Store<AVMState>
 
   constructor({
     id,
@@ -131,17 +131,17 @@ export class ExodusWallet extends BaseWallet {
 
     const activeAccount = walletAccounts[0]
 
-    const walletState: WalletState = {
+    const walletAVMState: WalletAVMState = {
       accounts: walletAccounts,
       activeAccount
     }
 
     addWallet(this.store, {
       walletId: this.id,
-      wallet: walletState
+      wallet: walletAVMState
     })
 
-    this.logger.info('✅ Connected.', walletState)
+    this.logger.info('✅ Connected.', walletAVMState)
     return walletAccounts
   }
 
@@ -154,10 +154,10 @@ export class ExodusWallet extends BaseWallet {
   public resumeSession = async (): Promise<void> => {
     try {
       const state = this.store.state
-      const walletState = state.wallets[this.id]
+      const walletAVMState = state.wallets[this.id]
 
       // No session to resume
-      if (!walletState) {
+      if (!walletAVMState) {
         this.logger.info('No session to resume')
         return
       }

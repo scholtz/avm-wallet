@@ -4,22 +4,22 @@ import { NetworkId, isValidNetworkId } from 'src/network'
 import { WalletId, type WalletAccount } from 'src/wallets'
 import type { Store } from '@tanstack/store'
 
-export type WalletState = {
+export type WalletAVMState = {
   accounts: WalletAccount[]
   activeAccount: WalletAccount | null
 }
 
-export type WalletStateMap = Partial<Record<WalletId, WalletState>>
+export type WalletAVMStateMap = Partial<Record<WalletId, WalletAVMState>>
 
-export interface State {
+export interface AVMState {
   avmWallet: boolean
-  wallets: WalletStateMap
+  wallets: WalletAVMStateMap
   avmActiveWallet: WalletId | null
   activeNetwork: NetworkId
   algodClient: algosdk.Algodv2
 }
 
-export const defaultState: State = {
+export const defaultAVMState: AVMState = {
   avmWallet: true,
   wallets: {},
   avmActiveWallet: null,
@@ -29,11 +29,11 @@ export const defaultState: State = {
 
 export const LOCAL_STORAGE_KEY = 'avm-wallet:v3'
 
-// State mutations
+// AVMState mutations
 
 export function addWallet(
-  store: Store<State>,
-  { walletId, wallet }: { walletId: WalletId; wallet: WalletState }
+  store: Store<AVMState>,
+  { walletId, wallet }: { walletId: WalletId; wallet: WalletAVMState }
 ) {
   store.setState((state) => {
     const updatedWallets = {
@@ -52,7 +52,7 @@ export function addWallet(
   })
 }
 
-export function removeWallet(store: Store<State>, { walletId }: { walletId: WalletId }) {
+export function removeWallet(store: Store<AVMState>, { walletId }: { walletId: WalletId }) {
   store.setState((state) => {
     const updatedWallets = { ...state.wallets }
     delete updatedWallets[walletId]
@@ -65,7 +65,7 @@ export function removeWallet(store: Store<State>, { walletId }: { walletId: Wall
   })
 }
 
-export function setActiveWallet(store: Store<State>, { walletId }: { walletId: WalletId | null }) {
+export function setActiveWallet(store: Store<AVMState>, { walletId }: { walletId: WalletId | null }) {
   store.setState((state) => ({
     ...state,
     avmActiveWallet: walletId
@@ -73,7 +73,7 @@ export function setActiveWallet(store: Store<State>, { walletId }: { walletId: W
 }
 
 export function setActiveAccount(
-  store: Store<State>,
+  store: Store<AVMState>,
   { walletId, address }: { walletId: WalletId; address: string }
 ) {
   store.setState((state) => {
@@ -108,7 +108,7 @@ export function setActiveAccount(
 }
 
 export function setAccounts(
-  store: Store<State>,
+  store: Store<AVMState>,
   { walletId, accounts }: { walletId: WalletId; accounts: WalletAccount[] }
 ) {
   store.setState((state) => {
@@ -147,7 +147,7 @@ export function setAccounts(
 }
 
 export function setActiveNetwork(
-  store: Store<State>,
+  store: Store<AVMState>,
   { networkId, algodClient }: { networkId: NetworkId; algodClient: algosdk.Algodv2 }
 ) {
   store.setState((state) => ({
@@ -172,7 +172,7 @@ export function isValidWalletAccount(account: any): account is WalletAccount {
   )
 }
 
-export function isValidWalletState(wallet: any): wallet is WalletState {
+export function isValidWalletAVMState(wallet: any): wallet is WalletAVMState {
   return (
     typeof wallet === 'object' &&
     wallet !== null &&
@@ -182,11 +182,11 @@ export function isValidWalletState(wallet: any): wallet is WalletState {
   )
 }
 
-export function isValidState(state: any): state is State {
+export function isValidAVMState(state: any): state is AVMState {
   if (!state || typeof state !== 'object') return false
   if (typeof state.wallets !== 'object') return false
   for (const [walletId, wallet] of Object.entries(state.wallets)) {
-    if (!isValidWalletId(walletId) || !isValidWalletState(wallet)) return false
+    if (!isValidWalletId(walletId) || !isValidWalletAVMState(wallet)) return false
   }
   if (state.avmActiveWallet !== null && !isValidWalletId(state.avmActiveWallet)) return false
   if (!isValidNetworkId(state.activeNetwork)) return false

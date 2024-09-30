@@ -1,6 +1,6 @@
 import { logger } from 'src/logger'
 import { StorageAdapter } from 'src/storage'
-import { setActiveWallet, setActiveAccount, removeWallet, type State } from 'src/store'
+import { setActiveWallet, setActiveAccount, removeWallet, type AVMState } from 'src/store'
 import type { Store } from '@tanstack/store'
 import type algosdk from 'algosdk'
 import type { NetworkId } from 'src/network'
@@ -15,10 +15,10 @@ export abstract class BaseWallet {
   readonly id: WalletId
   readonly metadata: WalletMetadata
 
-  protected store: Store<State>
+  protected store: Store<AVMState>
   protected getAlgodClient: () => algosdk.Algodv2
 
-  public subscribe: (callback: (state: State) => void) => () => void
+  public subscribe: (callback: (state: AVMState) => void) => () => void
 
   protected logger: ReturnType<typeof logger.createScopedLogger>
 
@@ -91,8 +91,8 @@ export abstract class BaseWallet {
 
   public get accounts(): WalletAccount[] {
     const state = this.store.state
-    const walletState = state.wallets[this.id]
-    return walletState ? walletState.accounts : []
+    const walletAVMState = state.wallets[this.id]
+    return walletAVMState ? walletAVMState.accounts : []
   }
 
   public get addresses(): string[] {
@@ -101,8 +101,8 @@ export abstract class BaseWallet {
 
   public get activeAccount(): WalletAccount | null {
     const state = this.store.state
-    const walletState = state.wallets[this.id]
-    return walletState ? walletState.activeAccount : null
+    const walletAVMState = state.wallets[this.id]
+    return walletAVMState ? walletAVMState.activeAccount : null
   }
 
   public get activeAddress(): string | null {
@@ -116,8 +116,8 @@ export abstract class BaseWallet {
 
   public get isConnected(): boolean {
     const state = this.store.state
-    const walletState = state.wallets[this.id]
-    return walletState ? walletState.accounts.length > 0 : false
+    const walletAVMState = state.wallets[this.id]
+    return walletAVMState ? walletAVMState.accounts.length > 0 : false
   }
 
   public get isActive(): boolean {

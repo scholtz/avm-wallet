@@ -50,19 +50,19 @@ export function useWallet() {
     console.info(`[Vue] ✅ Active network set to ${networkId}.`)
   }
 
-  const walletStateMap = useStore(manager.store, (state) => state.wallets)
+  const walletAVMStateMap = useStore(manager.store, (state) => state.wallets)
   const avmActiveWalletId = useStore(manager.store, (state) => state.avmActiveWallet)
 
   const wallets = computed(() => {
     return [...manager.wallets.values()].map((wallet): Wallet => {
-      const walletState = walletStateMap.value[wallet.id]
+      const walletAVMState = walletAVMStateMap.value[wallet.id]
 
       return {
         id: wallet.id,
         metadata: wallet.metadata,
-        accounts: walletState?.accounts ?? [],
-        activeAccount: walletState?.activeAccount ?? null,
-        isConnected: !!walletState,
+        accounts: walletAVMState?.accounts ?? [],
+        activeAccount: walletAVMState?.activeAccount ?? null,
+        isConnected: !!walletAVMState,
         isActive: wallet.id === avmActiveWalletId.value,
         connect: (args) => wallet.connect(args),
         disconnect: () => wallet.disconnect(),
@@ -76,13 +76,13 @@ export function useWallet() {
     return avmActiveWalletId.value ? manager.getWallet(avmActiveWalletId.value) || null : null
   })
 
-  const avmActiveWalletState = computed(() => {
+  const avmActiveWalletAVMState = computed(() => {
     const wallet = avmActiveWallet.value
-    return wallet ? walletStateMap.value[wallet.id] || null : null
+    return wallet ? walletAVMStateMap.value[wallet.id] || null : null
   })
 
   const avmActiveWalletAccounts = computed(() => {
-    return avmActiveWalletState.value?.accounts ?? null
+    return avmActiveWalletAVMState.value?.accounts ?? null
   })
 
   const avmActiveWalletAddresses = computed(() => {
@@ -90,7 +90,7 @@ export function useWallet() {
   })
 
   const activeAccount = computed(() => {
-    return avmActiveWalletState.value?.activeAccount ?? null
+    return avmActiveWalletAVMState.value?.activeAccount ?? null
   })
 
   const activeAddress = computed(() => {

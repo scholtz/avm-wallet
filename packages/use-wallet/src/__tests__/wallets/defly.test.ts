@@ -2,7 +2,7 @@ import { Store } from '@tanstack/store'
 import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { StorageAdapter } from 'src/storage'
-import { LOCAL_STORAGE_KEY, State, WalletState, defaultState } from 'src/store'
+import { LOCAL_STORAGE_KEY, AVMState, WalletAVMState, defaultAVMState } from 'src/store'
 import { DeflyWallet } from 'src/wallets/defly'
 import { WalletId } from 'src/wallets/types'
 import type { Mock } from 'vitest'
@@ -50,7 +50,7 @@ vi.mock('@blockshake/defly-connect', async (importOriginal) => {
   }
 })
 
-function createWalletWithStore(store: Store<State>): DeflyWallet {
+function createWalletWithStore(store: Store<AVMState>): DeflyWallet {
   const wallet = new DeflyWallet({
     id: WalletId.DEFLY,
     metadata: {},
@@ -67,8 +67,8 @@ function createWalletWithStore(store: Store<State>): DeflyWallet {
 
 describe('DeflyWallet', () => {
   let wallet: DeflyWallet
-  let store: Store<State>
-  let mockInitialState: State | null = null
+  let store: Store<AVMState>
+  let mockInitialAVMState: AVMState | null = null
   let mockLogger: {
     debug: Mock
     info: Mock
@@ -91,8 +91,8 @@ describe('DeflyWallet', () => {
     let mockWalletConnectData: string | null = null
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       if (key === 'walletconnect') {
         return mockWalletConnectData
@@ -102,7 +102,7 @@ describe('DeflyWallet', () => {
 
     vi.mocked(StorageAdapter.setItem).mockImplementation((key: string, value: string) => {
       if (key === LOCAL_STORAGE_KEY) {
-        mockInitialState = JSON.parse(value)
+        mockInitialAVMState = JSON.parse(value)
       }
       if (key.startsWith('walletconnect-')) {
         mockWalletConnectData = value
@@ -123,13 +123,13 @@ describe('DeflyWallet', () => {
     }
     vi.mocked(logger.createScopedLogger).mockReturnValue(mockLogger)
 
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
     wallet = createWalletWithStore(store)
   })
 
   afterEach(async () => {
     await wallet.disconnect()
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('connect', () => {
@@ -328,15 +328,15 @@ describe('DeflyWallet', () => {
     })
 
     it('should resume session if session is found', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.DEFLY]: walletState
+          [WalletId.DEFLY]: walletAVMState
         }
       })
 
@@ -347,13 +347,13 @@ describe('DeflyWallet', () => {
       await wallet.resumeSession()
 
       expect(mockDeflyWallet.reconnectSession).toHaveBeenCalled()
-      expect(store.state.wallets[WalletId.DEFLY]).toEqual(walletState)
+      expect(store.state.wallets[WalletId.DEFLY]).toEqual(walletAVMState)
       expect(wallet.isConnected).toBe(true)
     })
 
     it('should update the store if accounts do not match', async () => {
       // Stored accounts are 'mockAddress1' and 'mockAddress2'
-      const prevWalletState: WalletState = {
+      const prevWalletAVMState: WalletAVMState = {
         accounts: [
           {
             name: 'Defly Account 1',
@@ -370,10 +370,10 @@ describe('DeflyWallet', () => {
         }
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.DEFLY]: prevWalletState
+          [WalletId.DEFLY]: prevWalletAVMState
         }
       })
 
@@ -382,7 +382,7 @@ describe('DeflyWallet', () => {
       // Client only returns 'mockAddress2' on reconnect, 'mockAddress1' is missing
       const newAccounts = ['mockAddress2']
 
-      const newWalletState: WalletState = {
+      const newWalletAVMState: WalletAVMState = {
         accounts: [
           {
             name: 'Defly Account 1', // auto-generated name
@@ -400,22 +400,22 @@ describe('DeflyWallet', () => {
       await wallet.resumeSession()
 
       expect(mockLogger.warn).toHaveBeenCalledWith('Session accounts mismatch, updating accounts', {
-        prev: prevWalletState.accounts,
-        current: newWalletState.accounts
+        prev: prevWalletAVMState.accounts,
+        current: newWalletAVMState.accounts
       })
-      expect(store.state.wallets[WalletId.DEFLY]).toEqual(newWalletState)
+      expect(store.state.wallets[WalletId.DEFLY]).toEqual(newWalletAVMState)
     })
 
     it('should throw an error and disconnect if reconnectSession fails', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.DEFLY]: walletState
+          [WalletId.DEFLY]: walletAVMState
         }
       })
 
@@ -429,15 +429,15 @@ describe('DeflyWallet', () => {
     })
 
     it('should throw an error and disconnect if no accounts are found', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.DEFLY]: walletState
+          [WalletId.DEFLY]: walletAVMState
         }
       })
 

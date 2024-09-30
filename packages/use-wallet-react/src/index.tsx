@@ -56,19 +56,19 @@ export const useWallet = () => {
     console.info(`[React] ✅ Active network set to ${networkId}.`)
   }
 
-  const walletStateMap = useStore(manager.store, (state) => state.wallets)
+  const walletAVMStateMap = useStore(manager.store, (state) => state.wallets)
   const avmActiveWalletId = useStore(manager.store, (state) => state.avmActiveWallet)
 
   const wallets = React.useMemo(() => {
     return [...manager.wallets.values()].map((wallet): Wallet => {
-      const walletState = walletStateMap[wallet.id]
+      const walletAVMState = walletAVMStateMap[wallet.id]
 
       return {
         id: wallet.id,
         metadata: wallet.metadata,
-        accounts: walletState?.accounts ?? [],
-        activeAccount: walletState?.activeAccount ?? null,
-        isConnected: !!walletState,
+        accounts: walletAVMState?.accounts ?? [],
+        activeAccount: walletAVMState?.activeAccount ?? null,
+        isConnected: !!walletAVMState,
         isActive: wallet.id === avmActiveWalletId,
         connect: (args) => wallet.connect(args),
         disconnect: () => wallet.disconnect(),
@@ -76,14 +76,14 @@ export const useWallet = () => {
         setActiveAccount: (addr) => wallet.setActiveAccount(addr)
       }
     })
-  }, [manager, walletStateMap, avmActiveWalletId])
+  }, [manager, walletAVMStateMap, avmActiveWalletId])
 
   const avmActiveWallet = avmActiveWalletId ? manager.getWallet(avmActiveWalletId) || null : null
-  const avmActiveWalletState = avmActiveWalletId ? walletStateMap[avmActiveWalletId] || null : null
+  const avmActiveWalletAVMState = avmActiveWalletId ? walletAVMStateMap[avmActiveWalletId] || null : null
 
-  const avmActiveWalletAccounts = avmActiveWalletState?.accounts ?? null
+  const avmActiveWalletAccounts = avmActiveWalletAVMState?.accounts ?? null
   const avmActiveWalletAddresses = avmActiveWalletAccounts?.map((account) => account.address) ?? null
-  const activeAccount = avmActiveWalletState?.activeAccount ?? null
+  const activeAccount = avmActiveWalletAVMState?.activeAccount ?? null
   const activeAddress = activeAccount?.address ?? null
 
   const signTransactions = <T extends algosdk.Transaction[] | Uint8Array[]>(

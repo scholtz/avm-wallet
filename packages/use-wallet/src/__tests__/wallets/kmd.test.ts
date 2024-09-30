@@ -2,7 +2,7 @@ import { Store } from '@tanstack/store'
 import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { StorageAdapter } from 'src/storage'
-import { LOCAL_STORAGE_KEY, State, WalletState, defaultState } from 'src/store'
+import { LOCAL_STORAGE_KEY, AVMState, WalletAVMState, defaultAVMState } from 'src/store'
 import { KmdWallet } from 'src/wallets/kmd'
 import { WalletId } from 'src/wallets/types'
 import type { Mock } from 'vitest'
@@ -47,7 +47,7 @@ vi.mock('algosdk', async (importOriginal) => {
   }
 })
 
-function createWalletWithStore(store: Store<State>): KmdWallet {
+function createWalletWithStore(store: Store<AVMState>): KmdWallet {
   return new KmdWallet({
     id: WalletId.KMD,
     metadata: {},
@@ -59,8 +59,8 @@ function createWalletWithStore(store: Store<State>): KmdWallet {
 
 describe('KmdWallet', () => {
   let wallet: KmdWallet
-  let store: Store<State>
-  let mockInitialState: State | null = null
+  let store: Store<AVMState>
+  let mockInitialAVMState: AVMState | null = null
   let mockLogger: {
     debug: Mock
     info: Mock
@@ -85,15 +85,15 @@ describe('KmdWallet', () => {
     vi.clearAllMocks()
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       return null
     })
 
     vi.mocked(StorageAdapter.setItem).mockImplementation((key: string, value: string) => {
       if (key === LOCAL_STORAGE_KEY) {
-        mockInitialState = JSON.parse(value)
+        mockInitialAVMState = JSON.parse(value)
       }
     })
 
@@ -105,7 +105,7 @@ describe('KmdWallet', () => {
     }
     vi.mocked(logger.createScopedLogger).mockReturnValue(mockLogger)
 
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
     wallet = createWalletWithStore(store)
 
     // Password prompt
@@ -118,7 +118,7 @@ describe('KmdWallet', () => {
   afterEach(async () => {
     global.prompt = vi.fn()
     await wallet.disconnect()
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('connect', () => {
@@ -184,15 +184,15 @@ describe('KmdWallet', () => {
     })
 
     it('should resume session if session is found', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.KMD]: walletState
+          [WalletId.KMD]: walletAVMState
         }
       })
 
@@ -201,7 +201,7 @@ describe('KmdWallet', () => {
       await wallet.resumeSession()
 
       expect(wallet.isConnected).toBe(true)
-      expect(store.state.wallets[WalletId.KMD]).toEqual(walletState)
+      expect(store.state.wallets[WalletId.KMD]).toEqual(walletAVMState)
     })
   })
 

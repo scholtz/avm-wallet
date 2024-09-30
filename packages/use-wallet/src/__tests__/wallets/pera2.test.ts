@@ -2,7 +2,7 @@ import { Store } from '@tanstack/store'
 import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { StorageAdapter } from 'src/storage'
-import { LOCAL_STORAGE_KEY, State, WalletState, defaultState } from 'src/store'
+import { LOCAL_STORAGE_KEY, AVMState, WalletAVMState, defaultAVMState } from 'src/store'
 import { PeraWallet } from 'src/wallets/pera2'
 import { WalletId } from 'src/wallets/types'
 import type { Mock } from 'vitest'
@@ -45,7 +45,7 @@ vi.mock('@perawallet/connect-beta', () => {
   }
 })
 
-function createWalletWithStore(store: Store<State>): PeraWallet {
+function createWalletWithStore(store: Store<AVMState>): PeraWallet {
   const wallet = new PeraWallet({
     id: WalletId.PERA2,
     options: {
@@ -65,8 +65,8 @@ function createWalletWithStore(store: Store<State>): PeraWallet {
 
 describe('PeraWallet', () => {
   let wallet: PeraWallet
-  let store: Store<State>
-  let mockInitialState: State | null = null
+  let store: Store<AVMState>
+  let mockInitialAVMState: AVMState | null = null
   let mockLogger: {
     debug: Mock
     info: Mock
@@ -87,15 +87,15 @@ describe('PeraWallet', () => {
     vi.clearAllMocks()
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       return null
     })
 
     vi.mocked(StorageAdapter.setItem).mockImplementation((key: string, value: string) => {
       if (key === LOCAL_STORAGE_KEY) {
-        mockInitialState = JSON.parse(value)
+        mockInitialAVMState = JSON.parse(value)
       }
     })
 
@@ -107,13 +107,13 @@ describe('PeraWallet', () => {
     }
     vi.mocked(logger.createScopedLogger).mockReturnValue(mockLogger)
 
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
     wallet = createWalletWithStore(store)
   })
 
   afterEach(async () => {
     await wallet.disconnect()
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('connect', () => {
@@ -209,15 +209,15 @@ describe('PeraWallet', () => {
     })
 
     it('should resume session if session is found', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.PERA2]: walletState
+          [WalletId.PERA2]: walletAVMState
         }
       })
 
@@ -228,13 +228,13 @@ describe('PeraWallet', () => {
       await wallet.resumeSession()
 
       expect(mockPeraWallet.reconnectSession).toHaveBeenCalled()
-      expect(store.state.wallets[WalletId.PERA2]).toEqual(walletState)
+      expect(store.state.wallets[WalletId.PERA2]).toEqual(walletAVMState)
       expect(wallet.isConnected).toBe(true)
     })
 
     it('should update the store if accounts do not match', async () => {
       // Stored accounts are 'mockAddress1' and 'mockAddress2'
-      const prevWalletState: WalletState = {
+      const prevWalletAVMState: WalletAVMState = {
         accounts: [
           {
             name: 'Pera Account 1',
@@ -251,10 +251,10 @@ describe('PeraWallet', () => {
         }
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.PERA2]: prevWalletState
+          [WalletId.PERA2]: prevWalletAVMState
         }
       })
 
@@ -263,7 +263,7 @@ describe('PeraWallet', () => {
       // Client only returns 'mockAddress2' on reconnect, 'mockAddress1' is missing
       const newAccounts = ['mockAddress2']
 
-      const newWalletState: WalletState = {
+      const newWalletAVMState: WalletAVMState = {
         accounts: [
           {
             name: 'Pera Account 1', // auto-generated name
@@ -281,22 +281,22 @@ describe('PeraWallet', () => {
       await wallet.resumeSession()
 
       expect(mockLogger.warn).toHaveBeenCalledWith('Session accounts mismatch, updating accounts', {
-        prev: prevWalletState.accounts,
-        current: newWalletState.accounts
+        prev: prevWalletAVMState.accounts,
+        current: newWalletAVMState.accounts
       })
-      expect(store.state.wallets[WalletId.PERA2]).toEqual(newWalletState)
+      expect(store.state.wallets[WalletId.PERA2]).toEqual(newWalletAVMState)
     })
 
     it('should throw an error and disconnect if reconnectSession fails', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.PERA2]: walletState
+          [WalletId.PERA2]: walletAVMState
         }
       })
 
@@ -310,15 +310,15 @@ describe('PeraWallet', () => {
     })
 
     it('should throw an error and disconnect if no accounts are found', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.PERA2]: walletState
+          [WalletId.PERA2]: walletAVMState
         }
       })
 

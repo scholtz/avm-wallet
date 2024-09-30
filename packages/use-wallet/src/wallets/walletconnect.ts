@@ -1,6 +1,6 @@
 import algosdk from 'algosdk'
 import { caipChainId } from 'src/network'
-import { WalletState, addWallet, setAccounts, type State } from 'src/store'
+import { WalletAVMState, addWallet, setAccounts, type AVMState } from 'src/store'
 import {
   base64ToByteArray,
   byteArrayToBase64,
@@ -64,7 +64,7 @@ export class WalletConnect extends BaseWallet {
   private session: SessionTypes.Struct | null = null
   private chains: string[]
 
-  protected store: Store<State>
+  protected store: Store<AVMState>
 
   constructor({
     id,
@@ -324,26 +324,26 @@ export class WalletConnect extends BaseWallet {
     }))
 
     const state = this.store.state
-    const walletState = state.wallets[this.id]
+    const walletAVMState = state.wallets[this.id]
 
-    if (!walletState) {
-      const newWalletState: WalletState = {
+    if (!walletAVMState) {
+      const newWalletAVMState: WalletAVMState = {
         accounts: walletAccounts,
         activeAccount: walletAccounts[0]
       }
 
       addWallet(this.store, {
         walletId: this.id,
-        wallet: newWalletState
+        wallet: newWalletAVMState
       })
 
-      this.logger.info('Connected', newWalletState)
+      this.logger.info('Connected', newWalletAVMState)
     } else {
-      const match = compareAccounts(walletAccounts, walletState.accounts)
+      const match = compareAccounts(walletAccounts, walletAVMState.accounts)
 
       if (!match) {
         this.logger.warn('Session accounts mismatch, updating accounts', {
-          prev: walletState.accounts,
+          prev: walletAVMState.accounts,
           current: walletAccounts
         })
         setAccounts(this.store, {
@@ -416,10 +416,10 @@ export class WalletConnect extends BaseWallet {
   public resumeSession = async (): Promise<void> => {
     try {
       const state = this.store.state
-      const walletState = state.wallets[this.id]
+      const walletAVMState = state.wallets[this.id]
 
       // No session to resume
-      if (!walletState) {
+      if (!walletAVMState) {
         this.logger.info('No session to resume')
         return
       }

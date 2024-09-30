@@ -2,7 +2,7 @@ import { Store } from '@tanstack/store'
 import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { NetworkId } from 'src/network'
-import { LOCAL_STORAGE_KEY, State, defaultState } from 'src/store'
+import { LOCAL_STORAGE_KEY, AVMState, defaultAVMState } from 'src/store'
 import { WalletManager } from 'src/manager'
 import { StorageAdapter } from 'src/storage'
 import { BaseWallet } from 'src/wallets/base'
@@ -98,7 +98,7 @@ vi.mock('src/wallets/kibisis', () => ({
   }
 }))
 
-const mockStore = new Store<State>(defaultState)
+const mockStore = new Store<AVMState>(defaultAVMState)
 
 const mockDeflyWallet = new DeflyWallet({
   id: WalletId.DEFLY,
@@ -117,20 +117,20 @@ const mockKibisisWallet = new KibisisWallet({
 })
 
 describe('WalletManager', () => {
-  let mockInitialState: State | null = null
+  let mockInitialAVMState: AVMState | null = null
 
   beforeEach(() => {
     vi.clearAllMocks()
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       return null
     })
 
     // Reset to null before each test
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('constructor', () => {
@@ -270,9 +270,9 @@ describe('WalletManager', () => {
     })
   })
 
-  describe('loadPersistedState', () => {
+  describe('loadPersistedAVMState', () => {
     beforeEach(() => {
-      mockInitialState = {
+      mockInitialAVMState = {
         wallets: {
           [WalletId.KIBISIS]: {
             accounts: [
@@ -301,44 +301,44 @@ describe('WalletManager', () => {
       const manager = new WalletManager({
         wallets: [WalletId.DEFLY, WalletId.KIBISIS]
       })
-      // expect(manager.store.state).toEqual(mockInitialState)
+      // expect(manager.store.state).toEqual(mockInitialAVMState)
       expect(manager.avmActiveWallet?.id).toBe(WalletId.KIBISIS)
       expect(manager.activeNetwork).toBe(NetworkId.BETANET)
     })
 
     it('returns null if no persisted state', () => {
-      mockInitialState = null
+      mockInitialAVMState = null
 
       const manager = new WalletManager({
         wallets: [WalletId.DEFLY, WalletId.KIBISIS]
       })
 
       // Store initializes with default state if null is returned
-      expect(manager.store.state).toEqual(defaultState)
+      expect(manager.store.state).toEqual(defaultAVMState)
       expect(manager.avmActiveWallet).toBeNull()
       expect(manager.activeNetwork).toBe(NetworkId.TESTNET)
     })
 
     it('returns null and logs warning and error if persisted state is invalid', () => {
-      const invalidState = { invalid: 'state' }
-      vi.mocked(StorageAdapter.getItem).mockReturnValueOnce(JSON.stringify(invalidState))
+      const invalidAVMState = { invalid: 'state' }
+      vi.mocked(StorageAdapter.getItem).mockReturnValueOnce(JSON.stringify(invalidAVMState))
 
       const manager = new WalletManager({
         wallets: [WalletId.DEFLY, WalletId.KIBISIS]
       })
 
-      expect(mockLoggerWarn).toHaveBeenCalledWith('Parsed state:', invalidState)
+      expect(mockLoggerWarn).toHaveBeenCalledWith('Parsed state:', invalidAVMState)
       expect(mockLoggerError).toHaveBeenCalledWith(
         'Could not load state from local storage: Persisted state is invalid'
       )
       // Store initializes with default state if null is returned
-      expect(manager.store.state).toEqual(defaultState)
+      expect(manager.store.state).toEqual(defaultAVMState)
     })
   })
 
-  describe('savePersistedState', () => {
+  describe('savePersistedAVMState', () => {
     it('saves state to local storage', async () => {
-      const stateToSave: Omit<State, 'algodClient'> = {
+      const stateToSave: Omit<AVMState, 'algodClient'> = {
         wallets: {},
         avmActiveWallet: null,
         activeNetwork: NetworkId.MAINNET
@@ -358,7 +358,7 @@ describe('WalletManager', () => {
 
   describe('avmActiveWallet', () => {
     beforeEach(() => {
-      mockInitialState = {
+      mockInitialAVMState = {
         wallets: {
           [WalletId.KIBISIS]: {
             accounts: [
@@ -391,7 +391,7 @@ describe('WalletManager', () => {
     })
 
     it('returns null if no active wallet', () => {
-      mockInitialState = null
+      mockInitialAVMState = null
 
       const manager = new WalletManager({
         wallets: [WalletId.DEFLY, WalletId.KIBISIS]
@@ -504,24 +504,24 @@ describe('WalletManager', () => {
 
   describe('options', () => {
     describe('resetNetwork', () => {
-      let mockInitialState: State | null = null
+      let mockInitialAVMState: AVMState | null = null
 
       beforeEach(() => {
         vi.clearAllMocks()
 
         vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-          if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-            return JSON.stringify(mockInitialState)
+          if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+            return JSON.stringify(mockInitialAVMState)
           }
           return null
         })
 
         // Reset to null before each test
-        mockInitialState = null
+        mockInitialAVMState = null
       })
 
       it('uses the default network when resetNetwork is true, ignoring persisted state', () => {
-        mockInitialState = {
+        mockInitialAVMState = {
           wallets: {},
           avmActiveWallet: null,
           activeNetwork: NetworkId.MAINNET,
@@ -538,7 +538,7 @@ describe('WalletManager', () => {
       })
 
       it('uses the persisted network when resetNetwork is false', () => {
-        mockInitialState = {
+        mockInitialAVMState = {
           wallets: {},
           avmActiveWallet: null,
           activeNetwork: NetworkId.MAINNET,
@@ -565,7 +565,7 @@ describe('WalletManager', () => {
       })
 
       it('preserves wallet state when resetNetwork is true, only changing the network', () => {
-        mockInitialState = {
+        mockInitialAVMState = {
           wallets: {
             [WalletId.PERA]: {
               accounts: [{ name: 'Account 1', address: 'address1' }],

@@ -7,7 +7,7 @@ import type {
   WalletId,
   WalletManager,
   WalletMetadata,
-  WalletState
+  WalletAVMState
 } from 'avm-wallet'
 
 export * from 'avm-wallet'
@@ -61,26 +61,26 @@ export function useWallet() {
 
   const walletStore = useStore(manager().store, (state) => state.wallets)
 
-  const walletState = (walletId: WalletId): WalletState | null => walletStore()[walletId] || null
+  const walletAVMState = (walletId: WalletId): WalletAVMState | null => walletStore()[walletId] || null
 
   const avmActiveWalletId = useStore(manager().store, (state) => state.avmActiveWallet)
 
   const avmActiveWallet = () => manager().getWallet(avmActiveWalletId() as WalletId) || null
 
-  const avmActiveWalletState = () => walletState(avmActiveWalletId() as WalletId)
+  const avmActiveWalletAVMState = () => walletAVMState(avmActiveWalletId() as WalletId)
 
-  const avmActiveWalletAccounts = () => avmActiveWalletState()?.accounts ?? null
+  const avmActiveWalletAccounts = () => avmActiveWalletAVMState()?.accounts ?? null
 
   const avmActiveWalletAddresses = () =>
     avmActiveWalletAccounts()?.map((account) => account.address) ?? null
 
-  const activeAccount = () => avmActiveWalletState()?.activeAccount ?? null
+  const activeAccount = () => avmActiveWalletAVMState()?.activeAccount ?? null
 
   const activeAddress = () => activeAccount()?.address ?? null
 
   const isWalletActive = (walletId: WalletId) => walletId === avmActiveWalletId()
   const isWalletConnected = (walletId: WalletId) =>
-    !!walletState(walletId)?.accounts.length || false
+    !!walletAVMState(walletId)?.accounts.length || false
 
   const activeNetwork = useStore(manager().store, (state) => state.activeNetwork)
 
@@ -133,7 +133,7 @@ export function useWallet() {
     avmActiveWallet,
     avmActiveWalletAccounts,
     avmActiveWalletAddresses,
-    avmActiveWalletState,
+    avmActiveWalletAVMState,
     activeAccount,
     activeAddress,
     isWalletActive,

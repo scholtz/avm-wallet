@@ -1,7 +1,7 @@
 import algosdk from 'algosdk'
 import { NetworkId } from 'src/network'
 import { StorageAdapter } from 'src/storage'
-import { LOCAL_STORAGE_KEY, WalletState, addWallet, type State } from 'src/store'
+import { LOCAL_STORAGE_KEY, WalletAVMState, addWallet, type AVMState } from 'src/store'
 import { flattenTxnGroup, isSignedTxn, isTransactionArray } from 'src/utils'
 import { BaseWallet } from 'src/wallets/base'
 import type { Store } from '@tanstack/store'
@@ -24,7 +24,7 @@ export class MnemonicWallet extends BaseWallet {
   private account: algosdk.Account | null = null
   private options: MnemonicOptions
 
-  protected store: Store<State>
+  protected store: Store<AVMState>
 
   constructor({
     id,
@@ -109,17 +109,17 @@ export class MnemonicWallet extends BaseWallet {
       address: account.addr
     }
 
-    const walletState: WalletState = {
+    const walletAVMState: WalletAVMState = {
       accounts: [walletAccount],
       activeAccount: walletAccount
     }
 
     addWallet(this.store, {
       walletId: this.id,
-      wallet: walletState
+      wallet: walletAVMState
     })
 
-    this.logger.info('Connected successfully', walletState)
+    this.logger.info('Connected successfully', walletAVMState)
     return [walletAccount]
   }
 
@@ -135,10 +135,10 @@ export class MnemonicWallet extends BaseWallet {
     this.checkMainnet()
 
     const state = this.store.state
-    const walletState = state.wallets[this.id]
+    const walletAVMState = state.wallets[this.id]
 
     // Don't resume session, disconnect instead
-    if (walletState) {
+    if (walletAVMState) {
       this.logger.info('No session to resume, disconnecting...')
       this.disconnect()
     } else {

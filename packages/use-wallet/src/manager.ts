@@ -10,13 +10,13 @@ import {
 } from 'src/network'
 import { StorageAdapter } from 'src/storage'
 import {
-  defaultState,
-  isValidState,
+  defaultAVMState,
+  isValidAVMState,
   LOCAL_STORAGE_KEY,
   removeWallet,
   setActiveNetwork,
   setActiveWallet,
-  type State
+  type AVMState
 } from 'src/store'
 import { createWalletMap, deepMerge } from 'src/utils'
 import type { BaseWallet } from 'src/wallets/base'
@@ -43,13 +43,13 @@ export interface WalletManagerConfig {
   options?: WalletManagerOptions
 }
 
-export type PersistedState = Omit<State, 'algodClient'>
+export type PersistedAVMState = Omit<AVMState, 'algodClient'>
 
 export class WalletManager {
   public _clients: Map<WalletId, BaseWallet> = new Map()
   public networkConfig: NetworkConfigMap
-  public store: Store<State>
-  public subscribe: (callback: (state: State) => void) => () => void
+  public store: Store<AVMState>
+  public subscribe: (callback: (state: AVMState) => void) => () => void
   public options: { resetNetwork: boolean }
 
   private logger: ReturnType<typeof logger.createScopedLogger>
@@ -77,34 +77,34 @@ export class WalletManager {
     this.options = { resetNetwork: options.resetNetwork || false }
 
     // Load persisted state from local storage
-    const persistedState = this.loadPersistedState()
+    const persistedAVMState = this.loadPersistedAVMState()
 
     // Set active network
     const activeNetwork = this.options.resetNetwork
       ? network
-      : persistedState?.activeNetwork || network
+      : persistedAVMState?.activeNetwork || network
 
     // Create Algod client for active network
     const algodClient = this.createAlgodClient(activeNetwork)
 
     // Create initial state
-    const initialState: State = {
-      ...defaultState,
-      ...persistedState,
+    const initialAVMState: AVMState = {
+      ...defaultAVMState,
+      ...persistedAVMState,
       activeNetwork,
       algodClient
     }
 
     // Create store
-    this.store = new Store<State>(initialState, {
-      onUpdate: () => this.savePersistedState()
+    this.store = new Store<AVMState>(initialAVMState, {
+      onUpdate: () => this.savePersistedAVMState()
     })
 
     // Save persisted state immediately
-    this.savePersistedState()
+    this.savePersistedAVMState()
 
     // Subscribe to store updates
-    this.subscribe = (callback: (state: State) => void): (() => void) => {
+    this.subscribe = (callback: (state: AVMState) => void): (() => void) => {
       const unsubscribe = this.store.subscribe(() => {
         callback(this.store.state)
       })
@@ -146,30 +146,30 @@ export class WalletManager {
     }))
   }
 
-  private loadPersistedState(): PersistedState | null {
+  private loadPersistedAVMState(): PersistedAVMState | null {
     try {
-      const serializedState = StorageAdapter.getItem(LOCAL_STORAGE_KEY)
-      if (serializedState === null) {
+      const serializedAVMState = StorageAdapter.getItem(LOCAL_STORAGE_KEY)
+      if (serializedAVMState === null) {
         return null
       }
-      const parsedState = JSON.parse(serializedState)
-      if (!isValidState(parsedState)) {
-        this.logger.warn('Parsed state:', parsedState)
+      const parsedAVMState = JSON.parse(serializedAVMState)
+      if (!isValidAVMState(parsedAVMState)) {
+        this.logger.warn('Parsed state:', parsedAVMState)
         throw new Error('Persisted state is invalid')
       }
-      return parsedState as PersistedState
+      return parsedAVMState as PersistedAVMState
     } catch (error: any) {
       this.logger.error(`Could not load state from local storage: ${error.message}`)
       return null
     }
   }
 
-  private savePersistedState(): void {
+  private savePersistedAVMState(): void {
     try {
       const { wallets, avmActiveWallet, activeNetwork } = this.store.state
-      const persistedState: PersistedState = { avmWallet: true, wallets, avmActiveWallet, activeNetwork }
-      const serializedState = JSON.stringify(persistedState)
-      StorageAdapter.setItem(LOCAL_STORAGE_KEY, serializedState)
+      const persistedAVMState: PersistedAVMState = { avmWallet: true, wallets, avmActiveWallet, activeNetwork }
+      const serializedAVMState = JSON.stringify(persistedAVMState)
+      StorageAdapter.setItem(LOCAL_STORAGE_KEY, serializedAVMState)
     } catch (error) {
       this.logger.error('Could not save state to local storage:', error)
     }

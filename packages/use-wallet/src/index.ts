@@ -1,6 +1,6 @@
 export { LogLevel } from './logger'
 export { WalletManager, WalletManagerConfig, WalletManagerOptions } from './manager'
 export { NetworkId } from './network'
-export { State, WalletState, defaultState } from './store'
+export { AVMState, WalletAVMState, defaultAVMState } from './store'
 export { StorageAdapter } from './storage'
 export * from './wallets'

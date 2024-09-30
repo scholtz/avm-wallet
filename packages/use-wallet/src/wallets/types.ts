@@ -15,7 +15,7 @@ import { WalletConnect, type WalletConnectOptions } from './walletconnect'
 import { BiatecWallet } from './biatec'
 import type { Store } from '@tanstack/store'
 import type algosdk from 'algosdk'
-import type { State } from 'src/store'
+import type { AVMState } from 'src/store'
 
 export enum WalletId {
   BIATEC = 'biatec',
@@ -94,8 +94,8 @@ export interface BaseWalletConstructor {
   id: WalletId
   metadata: Partial<WalletMetadata> | undefined
   getAlgodClient: () => algosdk.Algodv2
-  store: Store<State>
-  subscribe: (callback: (state: State) => void) => () => void
+  store: Store<AVMState>
+  subscribe: (callback: (state: AVMState) => void) => () => void
 }
 
 export type WalletConstructor<T extends keyof WalletOptionsMap> = BaseWalletConstructor & {

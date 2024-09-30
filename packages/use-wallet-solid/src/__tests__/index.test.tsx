@@ -7,7 +7,7 @@ import {
   NetworkId,
   WalletManager,
   WalletId,
-  type State,
+  type AVMState,
   type WalletAccount
 } from 'avm-wallet'
 import { For, Show, createSignal } from 'solid-js'
@@ -63,7 +63,7 @@ const TestComponent = () => {
     avmActiveWalletAccounts,
     avmActiveWalletAddresses,
     avmActiveWalletId,
-    avmActiveWalletState,
+    avmActiveWalletAVMState,
     setActiveNetwork,
     isWalletActive,
     isWalletConnected,
@@ -92,7 +92,7 @@ const TestComponent = () => {
         {avmActiveWalletAddresses()?.join(', ') || 'null'}
       </div>
       <div data-testid="active-wallet-id">{JSON.stringify(avmActiveWalletId())}</div>
-      <div data-testid="active-wallet-state">{JSON.stringify(avmActiveWalletState())}</div>
+      <div data-testid="active-wallet-state">{JSON.stringify(avmActiveWalletAVMState())}</div>
       <div data-testid="wallet-store">{JSON.stringify(walletStore())}</div>
       <div data-testid="wallets">{wallets.map((wallet) => wallet.id).join(', ')}</div>
       <div data-testid="algod-client">{JSON.stringify(algodClient())}</div>
@@ -175,7 +175,7 @@ const TestComponent = () => {
 }
 
 describe('useWallet', () => {
-  let mockStore: Store<State, (cb: State) => State>
+  let mockStore: Store<AVMState, (cb: AVMState) => AVMState>
   let mockWalletManager: WalletManager
   let mockDeflyWallet: DeflyWallet
   let mockMagicAuth: MagicAuth
@@ -187,14 +187,14 @@ describe('useWallet', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    const defaultState = {
+    const defaultAVMState = {
       wallets: {},
       avmActiveWallet: null,
       activeNetwork: NetworkId.TESTNET,
       algodClient: new algosdk.Algodv2('', 'https://testnet-api.4160.nodely.dev/')
     }
 
-    mockStore = new Store<State>(defaultState)
+    mockStore = new Store<AVMState>(defaultAVMState)
 
     mockDeflyWallet = new DeflyWallet({
       id: WalletId.DEFLY,

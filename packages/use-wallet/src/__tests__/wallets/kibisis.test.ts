@@ -11,7 +11,7 @@ import { Store } from '@tanstack/store'
 import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { StorageAdapter } from 'src/storage'
-import { defaultState, LOCAL_STORAGE_KEY, State } from 'src/store'
+import { defaultAVMState, LOCAL_STORAGE_KEY, AVMState } from 'src/store'
 import { WalletId } from 'src/wallets'
 import { KibisisWallet, KIBISIS_AVM_WEB_PROVIDER_ID } from 'src/wallets/kibisis'
 import { base64ToByteArray, byteArrayToBase64 } from 'src/utils'
@@ -46,10 +46,10 @@ const ACCOUNT_2 = 'GD64YIY3TWGDMCNPP553DZPPR6LDUSFQOIJVFDPPXWEG3FVOJCCDBBHU5A'
 
 /**
  * Convenience function that initializes a wallet from a supplied store.
- * @param {Store<State>} store - a store to initialize the wallet with.
+ * @param {Store<AVMState>} store - a store to initialize the wallet with.
  * @returns {KibisisWallet} an initialized wallet.
  */
-function createWalletWithStore(store: Store<State>): KibisisWallet {
+function createWalletWithStore(store: Store<AVMState>): KibisisWallet {
   return new KibisisWallet({
     id: WalletId.KIBISIS,
     metadata: {},
@@ -77,8 +77,8 @@ function mockSignTransactionsResponseOnce(stxns: (string | null)[]): void {
 
 describe('KibisisWallet', () => {
   let wallet: KibisisWallet
-  let store: Store<State>
-  let mockInitialState: State | null = null
+  let store: Store<AVMState>
+  let mockInitialAVMState: AVMState | null = null
   let mockLogger: {
     debug: Mock
     info: Mock
@@ -99,15 +99,15 @@ describe('KibisisWallet', () => {
     vi.clearAllMocks()
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       return null
     })
 
     vi.mocked(StorageAdapter.setItem).mockImplementation((key: string, value: string) => {
       if (key === LOCAL_STORAGE_KEY) {
-        mockInitialState = JSON.parse(value)
+        mockInitialAVMState = JSON.parse(value)
       }
     })
 
@@ -139,13 +139,13 @@ describe('KibisisWallet', () => {
         } as IEnableResult)
       )
 
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
     wallet = createWalletWithStore(store)
   })
 
   afterEach(async () => {
     await wallet.disconnect()
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('connect', () => {
@@ -218,8 +218,8 @@ describe('KibisisWallet', () => {
     })
 
     it(`should call the client's _enable method if Kibisis wallet data is found in the store`, async () => {
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
           [WalletId.KIBISIS]: {
             accounts: [account1],
@@ -237,7 +237,7 @@ describe('KibisisWallet', () => {
 
     it(`should not call the client's _enable method if Kibisis wallet data is not found in the store`, async () => {
       // No wallets in store
-      store = new Store<State>(defaultState)
+      store = new Store<AVMState>(defaultAVMState)
       wallet = createWalletWithStore(store)
 
       await wallet.resumeSession()
@@ -248,8 +248,8 @@ describe('KibisisWallet', () => {
 
     it('should update the store if accounts returned by the client do not match', async () => {
       // Store contains 'account1' and 'account2', with 'account1' as active
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
           [WalletId.KIBISIS]: {
             accounts: [account1, account2],

@@ -1,5 +1,5 @@
 import algosdk from 'algosdk'
-import { WalletState, addWallet, setAccounts, type State } from 'src/store'
+import { WalletAVMState, addWallet, setAccounts, type AVMState } from 'src/store'
 import {
   base64ToByteArray,
   byteArrayToBase64,
@@ -30,7 +30,7 @@ export const ICON = `data:image/svg+xml;base64,${btoa(`
 export class KibisisWallet extends BaseWallet {
   public avmWebClient: AVMWebProviderSDK.AVMWebClient | null = null
   protected avmWebProviderSDK: typeof AVMWebProviderSDK | null = null
-  protected store: Store<State>
+  protected store: Store<AVMState>
 
   constructor({
     id,
@@ -324,17 +324,17 @@ export class KibisisWallet extends BaseWallet {
 
     const walletAccounts = this._mapAVMWebProviderAccountToWalletAccounts(result.accounts)
 
-    const walletState: WalletState = {
+    const walletAVMState: WalletAVMState = {
       accounts: walletAccounts,
       activeAccount: walletAccounts[0]
     }
 
     addWallet(this.store, {
       walletId: this.id,
-      wallet: walletState
+      wallet: walletAVMState
     })
 
-    this.logger.info('✅ Connected.', walletState)
+    this.logger.info('✅ Connected.', walletAVMState)
     return walletAccounts
   }
 
@@ -359,10 +359,10 @@ export class KibisisWallet extends BaseWallet {
 
   public async resumeSession(): Promise<void> {
     const state = this.store.state
-    const walletState = state.wallets[this.id]
+    const walletAVMState = state.wallets[this.id]
     let result: AVMWebProviderSDK.IEnableResult
 
-    if (!walletState) {
+    if (!walletAVMState) {
       this.logger.info('No session to resume')
       return
     }
@@ -377,11 +377,11 @@ export class KibisisWallet extends BaseWallet {
       }
 
       const walletAccounts = this._mapAVMWebProviderAccountToWalletAccounts(result.accounts)
-      const match = compareAccounts(walletAccounts, walletState.accounts)
+      const match = compareAccounts(walletAccounts, walletAVMState.accounts)
 
       if (!match) {
         this.logger.warn('Session accounts mismatch, updating accounts', {
-          prev: walletState.accounts,
+          prev: walletAVMState.accounts,
           current: walletAccounts
         })
 

@@ -2,18 +2,18 @@ import { Store } from '@tanstack/store'
 import { Algodv2 } from 'algosdk'
 import { NetworkId } from 'src/network'
 import {
-  State,
+  AVMState,
   addWallet,
-  defaultState,
+  defaultAVMState,
   removeWallet,
   setAccounts,
   setActiveAccount,
   setActiveNetwork,
   setActiveWallet,
-  isValidState,
+  isValidAVMState,
   isValidWalletAccount,
   isValidWalletId,
-  isValidWalletState
+  isValidWalletAVMState
 } from 'src/store'
 import { WalletId } from 'src/wallets/types'
 
@@ -28,10 +28,10 @@ vi.mock('src/logger', () => ({
 }))
 
 describe('Mutations', () => {
-  let store: Store<State>
+  let store: Store<AVMState>
 
   beforeEach(() => {
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
   })
 
   describe('addWallet', () => {
@@ -41,15 +41,15 @@ describe('Mutations', () => {
         name: 'Defly Wallet 1',
         address: 'address'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account],
         activeAccount: account
       }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
 
       const state = store.state
-      expect(state.wallets[walletId]).toEqual(walletState)
+      expect(state.wallets[walletId]).toEqual(walletAVMState)
       expect(state.avmActiveWallet).toBe(walletId)
     })
 
@@ -63,21 +63,21 @@ describe('Mutations', () => {
         name: 'Defly Wallet 2',
         address: 'address2'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account1, account2],
         activeAccount: account1
       }
 
-      const originalWalletState = { ...walletState }
+      const originalWalletAVMState = { ...walletAVMState }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
 
       const storedWallet = store.state.wallets[walletId]
 
       // Check that new object references were created
-      expect(storedWallet).not.toBe(walletState)
-      expect(storedWallet?.accounts).not.toBe(walletState.accounts)
-      expect(storedWallet?.activeAccount).not.toBe(walletState.activeAccount)
+      expect(storedWallet).not.toBe(walletAVMState)
+      expect(storedWallet?.accounts).not.toBe(walletAVMState.accounts)
+      expect(storedWallet?.activeAccount).not.toBe(walletAVMState.activeAccount)
 
       // Check that the content is still correct
       expect(storedWallet?.accounts).toEqual([account1, account2])
@@ -87,14 +87,14 @@ describe('Mutations', () => {
       storedWallet!.accounts[0].name = 'Modified Name'
 
       // Check that the original wallet state is unchanged
-      expect(walletState).toEqual(originalWalletState)
+      expect(walletAVMState).toEqual(originalWalletAVMState)
     })
   })
 
   describe('removeWallet', () => {
     beforeEach(() => {
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
           [WalletId.DEFLY]: {
             accounts: [
@@ -210,12 +210,12 @@ describe('Mutations', () => {
         name: 'Defly Wallet 2',
         address: 'address2'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account1, account2],
         activeAccount: account1
       }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
       expect(store.state.wallets[walletId]?.activeAccount).toEqual(account1)
 
       setActiveAccount(store, { walletId, address: account2.address })
@@ -232,12 +232,12 @@ describe('Mutations', () => {
         name: 'Defly Wallet 2',
         address: 'address2'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account1, account2],
         activeAccount: account1
       }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
       expect(store.state.wallets[walletId]?.activeAccount).toEqual(account1)
 
       setActiveAccount(store, { walletId: WalletId.EXODUS, address: 'exodusAddress' })
@@ -254,12 +254,12 @@ describe('Mutations', () => {
         name: 'Defly Wallet 2',
         address: 'address2'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account1, account2],
         activeAccount: account1
       }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
       expect(store.state.wallets[walletId]?.activeAccount).toEqual(account1)
 
       setActiveAccount(store, { walletId: WalletId.DEFLY, address: 'foo' })
@@ -276,12 +276,12 @@ describe('Mutations', () => {
         name: 'Defly Wallet 2',
         address: 'address2'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account1, account2],
         activeAccount: account1
       }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
       expect(store.state.wallets[walletId]?.accounts).toEqual([account1, account2])
       expect(store.state.wallets[walletId]?.activeAccount).toEqual(account1)
 
@@ -307,12 +307,12 @@ describe('Mutations', () => {
         name: 'Defly Wallet 2',
         address: 'address2'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account1, account2],
         activeAccount: account1
       }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
       const originalWallet = store.state.wallets[walletId]
       const originalAccounts = originalWallet?.accounts
       const originalActiveAccount = originalWallet?.activeAccount
@@ -345,12 +345,12 @@ describe('Mutations', () => {
         name: 'Defly Wallet 2',
         address: 'address2'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
       expect(store.state.wallets[walletId]?.accounts).toEqual([account1])
 
       const newAccounts = [account1, account2]
@@ -372,12 +372,12 @@ describe('Mutations', () => {
         name: 'Defly Wallet 3',
         address: 'address3'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
       expect(store.state.wallets[walletId]?.activeAccount).toEqual(account1)
 
       // New accounts list does not include active account (account1)
@@ -398,12 +398,12 @@ describe('Mutations', () => {
         name: 'Defly Wallet 2',
         address: 'address2'
       }
-      const walletState = {
+      const walletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      addWallet(store, { walletId, wallet: walletState })
+      addWallet(store, { walletId, wallet: walletAVMState })
 
       const newAccounts = [account1, account2]
       const originalNewAccounts = [...newAccounts]
@@ -483,10 +483,10 @@ describe('Type Guards', () => {
     })
   })
 
-  describe('isValidWalletState', () => {
-    it('returns true for a valid WalletState', () => {
+  describe('isValidWalletAVMState', () => {
+    it('returns true for a valid WalletAVMState', () => {
       expect(
-        isValidWalletState({
+        isValidWalletAVMState({
           accounts: [
             {
               name: 'Defly Wallet 1',
@@ -501,21 +501,21 @@ describe('Type Guards', () => {
       ).toBe(true)
 
       expect(
-        isValidWalletState({
+        isValidWalletAVMState({
           accounts: [],
           activeAccount: null
         })
       ).toBe(true)
     })
 
-    it('returns false for an invalid WalletState', () => {
-      expect(isValidWalletState('foo')).toBe(false)
-      expect(isValidWalletState(null)).toBe(false)
+    it('returns false for an invalid WalletAVMState', () => {
+      expect(isValidWalletAVMState('foo')).toBe(false)
+      expect(isValidWalletAVMState(null)).toBe(false)
     })
 
     it('returns false if accounts is invalid', () => {
       expect(
-        isValidWalletState({
+        isValidWalletAVMState({
           accounts: null,
           activeAccount: {
             name: 'Defly Wallet 1',
@@ -525,7 +525,7 @@ describe('Type Guards', () => {
       ).toBe(false)
 
       expect(
-        isValidWalletState({
+        isValidWalletAVMState({
           activeAccount: {
             name: 'Defly Wallet 1',
             address: 'address'
@@ -536,7 +536,7 @@ describe('Type Guards', () => {
 
     it('returns false if activeAccount is invalid', () => {
       expect(
-        isValidWalletState({
+        isValidWalletAVMState({
           accounts: [
             {
               name: 'Defly Wallet 1',
@@ -548,7 +548,7 @@ describe('Type Guards', () => {
       ).toBe(false)
 
       expect(
-        isValidWalletState({
+        isValidWalletAVMState({
           accounts: [
             {
               name: 'Defly Wallet 1',
@@ -560,17 +560,17 @@ describe('Type Guards', () => {
     })
   })
 
-  describe('isValidState', () => {
+  describe('isValidAVMState', () => {
     it('returns true for a valid state', () => {
-      const defaultState: State = {
+      const defaultAVMState: AVMState = {
         wallets: {},
         avmActiveWallet: null,
         activeNetwork: NetworkId.TESTNET,
         algodClient: new Algodv2('', 'https://testnet-api.4160.nodely.dev/')
       }
-      expect(isValidState(defaultState)).toBe(true)
+      expect(isValidAVMState(defaultAVMState)).toBe(true)
 
-      const state: State = {
+      const state: AVMState = {
         wallets: {
           [WalletId.DEFLY]: {
             accounts: [
@@ -605,29 +605,29 @@ describe('Type Guards', () => {
         activeNetwork: NetworkId.TESTNET,
         algodClient: new Algodv2('', 'https://testnet-api.4160.nodely.dev/')
       }
-      expect(isValidState(state)).toBe(true)
+      expect(isValidAVMState(state)).toBe(true)
     })
 
     it('returns false for an invalid state', () => {
-      expect(isValidState('foo')).toBe(false)
-      expect(isValidState(null)).toBe(false)
+      expect(isValidAVMState('foo')).toBe(false)
+      expect(isValidAVMState(null)).toBe(false)
 
       expect(
-        isValidState({
+        isValidAVMState({
           avmActiveWallet: WalletId.DEFLY,
           activeNetwork: NetworkId.TESTNET
         })
       ).toBe(false)
 
       expect(
-        isValidState({
+        isValidAVMState({
           wallets: {},
           activeNetwork: NetworkId.TESTNET
         })
       ).toBe(false)
 
       expect(
-        isValidState({
+        isValidAVMState({
           wallets: {},
           avmActiveWallet: WalletId.DEFLY
         })

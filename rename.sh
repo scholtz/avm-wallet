@@ -19,5 +19,15 @@ sed -i -e 's~TxnLab Inc.~TxnLab Inc., Scholtz \& Company, jsa~g' -e 's~Scholtz \
 
 find examples -type f -name "*" -print0 | xargs -0 sed -i -e "s~avm-wallet-example~example-avm-wallet~g"
 
-find . -type f -name "*" -print0 | xargs -0 sed -i -e "s~activeWallet~avmActiveWallet~g"
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~activeWallet~avmActiveWallet~g"
+find examples -type f -name "*" -print0 | xargs -0 sed -i -e "s~activeWallet~avmActiveWallet~g"
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~AVMState~AVMAVMState~g"
+find examples -type f -name "*" -print0 | xargs -0 sed -i -e "s~AVMState~AVMAVMState~g"
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~setAVMState~setState~g"
+find examples -type f -name "*" -print0 | xargs -0 sed -i -e "s~setAVMState~setState~g"
 
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~useAVMState~useState~g"
+find examples -type f -name "*" -print0 | xargs -0 sed -i -e "s~useAVMState~useState~g"
+
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~SetAVMState~SetState~g"
+find examples -type f -name "*" -print0 | xargs -0 sed -i -e "s~SetAVMState~SetState~g"

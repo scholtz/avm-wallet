@@ -2,7 +2,7 @@ import { Store } from '@tanstack/store'
 import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { StorageAdapter } from 'src/storage'
-import { LOCAL_STORAGE_KEY, State, WalletState, defaultState } from 'src/store'
+import { LOCAL_STORAGE_KEY, AVMState, WalletAVMState, defaultAVMState } from 'src/store'
 import { base64ToByteArray, byteArrayToBase64 } from 'src/utils'
 import { Exodus, ExodusWallet } from 'src/wallets/exodus'
 import { WalletId } from 'src/wallets/types'
@@ -46,7 +46,7 @@ Object.defineProperty(global, 'window', {
   }
 })
 
-function createWalletWithStore(store: Store<State>): ExodusWallet {
+function createWalletWithStore(store: Store<AVMState>): ExodusWallet {
   return new ExodusWallet({
     id: WalletId.EXODUS,
     metadata: {},
@@ -58,8 +58,8 @@ function createWalletWithStore(store: Store<State>): ExodusWallet {
 
 describe('ExodusWallet', () => {
   let wallet: ExodusWallet
-  let store: Store<State>
-  let mockInitialState: State | null = null
+  let store: Store<AVMState>
+  let mockInitialAVMState: AVMState | null = null
   let mockLogger: {
     debug: Mock
     info: Mock
@@ -80,15 +80,15 @@ describe('ExodusWallet', () => {
     vi.clearAllMocks()
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       return null
     })
 
     vi.mocked(StorageAdapter.setItem).mockImplementation((key: string, value: string) => {
       if (key === LOCAL_STORAGE_KEY) {
-        mockInitialState = JSON.parse(value)
+        mockInitialAVMState = JSON.parse(value)
       }
     })
 
@@ -100,13 +100,13 @@ describe('ExodusWallet', () => {
     }
     vi.mocked(logger.createScopedLogger).mockReturnValue(mockLogger)
 
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
     wallet = createWalletWithStore(store)
   })
 
   afterEach(async () => {
     await wallet.disconnect()
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('connect', () => {
@@ -176,15 +176,15 @@ describe('ExodusWallet', () => {
     })
 
     it('should resume session if session is found', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.EXODUS]: walletState
+          [WalletId.EXODUS]: walletAVMState
         }
       })
 
@@ -193,22 +193,22 @@ describe('ExodusWallet', () => {
       await wallet.resumeSession()
 
       expect(wallet.isConnected).toBe(true)
-      expect(store.state.wallets[WalletId.EXODUS]).toEqual(walletState)
+      expect(store.state.wallets[WalletId.EXODUS]).toEqual(walletAVMState)
     })
 
     it('should throw an error and disconnect if isConnected is false', async () => {
       // @ts-expect-error defined using Object.defineProperty
       window.algorand.isConnected = false
 
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.EXODUS]: walletState
+          [WalletId.EXODUS]: walletAVMState
         }
       })
 

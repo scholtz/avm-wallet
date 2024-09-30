@@ -2,7 +2,7 @@ import { Store } from '@tanstack/store'
 import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { StorageAdapter } from 'src/storage'
-import { LOCAL_STORAGE_KEY, State, defaultState } from 'src/store'
+import { LOCAL_STORAGE_KEY, AVMState, defaultAVMState } from 'src/store'
 import { CustomProvider, CustomWallet, WalletId } from 'src/wallets'
 import type { Mock } from 'vitest'
 
@@ -39,7 +39,7 @@ class MockProvider implements CustomProvider {
 
 const mockProvider = new MockProvider()
 
-function createWalletWithStore(store: Store<State>): CustomWallet {
+function createWalletWithStore(store: Store<AVMState>): CustomWallet {
   return new CustomWallet({
     id: WalletId.CUSTOM,
     options: {
@@ -57,8 +57,8 @@ function createWalletWithStore(store: Store<State>): CustomWallet {
 
 describe('CustomWallet', () => {
   let wallet: CustomWallet
-  let store: Store<State>
-  let mockInitialState: State | null = null
+  let store: Store<AVMState>
+  let mockInitialAVMState: AVMState | null = null
   let mockLogger: {
     debug: Mock
     info: Mock
@@ -79,15 +79,15 @@ describe('CustomWallet', () => {
     vi.clearAllMocks()
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       return null
     })
 
     vi.mocked(StorageAdapter.setItem).mockImplementation((key: string, value: string) => {
       if (key === LOCAL_STORAGE_KEY) {
-        mockInitialState = JSON.parse(value)
+        mockInitialAVMState = JSON.parse(value)
       }
     })
 
@@ -99,13 +99,13 @@ describe('CustomWallet', () => {
     }
     vi.mocked(logger.createScopedLogger).mockReturnValue(mockLogger)
 
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
     wallet = createWalletWithStore(store)
   })
 
   afterEach(async () => {
     await wallet.disconnect()
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('constructor', () => {
@@ -218,8 +218,8 @@ describe('CustomWallet', () => {
     })
 
     it('should call provider.resumeSession if a session is found', async () => {
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
           [WalletId.CUSTOM]: {
             accounts: [account1],
@@ -237,8 +237,8 @@ describe('CustomWallet', () => {
     })
 
     it('should update the store if provider.resumeSession returns different account(s)', async () => {
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
           [WalletId.CUSTOM]: {
             accounts: [account1],
@@ -261,8 +261,8 @@ describe('CustomWallet', () => {
     })
 
     it('should still work if provider.resumeSession is not defined', async () => {
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
           [WalletId.CUSTOM]: {
             accounts: [account1],

@@ -1,5 +1,5 @@
 import algosdk from 'algosdk'
-import { WalletState, addWallet, type State } from 'src/store'
+import { WalletAVMState, addWallet, type AVMState } from 'src/store'
 import { byteArrayToBase64, flattenTxnGroup, isSignedTxn, isTransactionArray } from 'src/utils'
 import { BaseWallet } from 'src/wallets/base'
 import type { Store } from '@tanstack/store'
@@ -30,7 +30,7 @@ export class LuteWallet extends BaseWallet {
   private client: LuteConnect | null = null
   private options: LuteConnectOptions
 
-  protected store: Store<State>
+  protected store: Store<AVMState>
 
   constructor({
     id,
@@ -91,17 +91,17 @@ export class LuteWallet extends BaseWallet {
 
     const activeAccount = walletAccounts[0]
 
-    const walletState: WalletState = {
+    const walletAVMState: WalletAVMState = {
       accounts: walletAccounts,
       activeAccount
     }
 
     addWallet(this.store, {
       walletId: this.id,
-      wallet: walletState
+      wallet: walletAVMState
     })
 
-    this.logger.info('Connected successfully', walletState)
+    this.logger.info('Connected successfully', walletAVMState)
     return walletAccounts
   }
 
@@ -113,10 +113,10 @@ export class LuteWallet extends BaseWallet {
   public resumeSession = async (): Promise<void> => {
     try {
       const state = this.store.state
-      const walletState = state.wallets[this.id]
+      const walletAVMState = state.wallets[this.id]
 
       // No session to resume
-      if (!walletState) {
+      if (!walletAVMState) {
         this.logger.info('No session to resume')
         return
       }

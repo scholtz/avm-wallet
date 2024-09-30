@@ -1,5 +1,5 @@
 import algosdk from 'algosdk'
-import { WalletState, addWallet, setAccounts, setActiveWallet, type State } from 'src/store'
+import { WalletAVMState, addWallet, setAccounts, setActiveWallet, type AVMState } from 'src/store'
 import { compareAccounts, flattenTxnGroup, isSignedTxn, isTransactionArray } from 'src/utils'
 import { BaseWallet } from 'src/wallets/base'
 import type { PeraWalletConnect } from '@perawallet/connect'
@@ -34,7 +34,7 @@ export class PeraWallet extends BaseWallet {
   private client: PeraWalletConnect | null = null
   private options: PeraWalletConnectOptions
 
-  protected store: Store<State>
+  protected store: Store<AVMState>
 
   constructor({
     id,
@@ -91,17 +91,17 @@ export class PeraWallet extends BaseWallet {
 
     const activeAccount = walletAccounts[0]
 
-    const walletState: WalletState = {
+    const walletAVMState: WalletAVMState = {
       accounts: walletAccounts,
       activeAccount
     }
 
     addWallet(this.store, {
       walletId: this.id,
-      wallet: walletState
+      wallet: walletAVMState
     })
 
-    this.logger.info('Connected successfully', walletState)
+    this.logger.info('Connected successfully', walletAVMState)
     return walletAccounts
   }
 
@@ -138,10 +138,10 @@ export class PeraWallet extends BaseWallet {
   public resumeSession = async (): Promise<void> => {
     try {
       const state = this.store.state
-      const walletState = state.wallets[this.id]
+      const walletAVMState = state.wallets[this.id]
 
       // No session to resume
-      if (!walletState) {
+      if (!walletAVMState) {
         this.logger.info('No session to resume')
         return
       }
@@ -161,11 +161,11 @@ export class PeraWallet extends BaseWallet {
         address
       }))
 
-      const match = compareAccounts(walletAccounts, walletState.accounts)
+      const match = compareAccounts(walletAccounts, walletAVMState.accounts)
 
       if (!match) {
         this.logger.warn('Session accounts mismatch, updating accounts', {
-          prev: walletState.accounts,
+          prev: walletAVMState.accounts,
           current: walletAccounts
         })
         setAccounts(this.store, {

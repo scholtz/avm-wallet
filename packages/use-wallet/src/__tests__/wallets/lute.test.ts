@@ -2,7 +2,7 @@ import { Store } from '@tanstack/store'
 import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { StorageAdapter } from 'src/storage'
-import { LOCAL_STORAGE_KEY, State, WalletState, defaultState } from 'src/store'
+import { LOCAL_STORAGE_KEY, AVMState, WalletAVMState, defaultAVMState } from 'src/store'
 import { byteArrayToBase64 } from 'src/utils'
 import { LuteWallet } from 'src/wallets/lute'
 import { SignTxnsError, WalletId } from 'src/wallets/types'
@@ -45,7 +45,7 @@ vi.mock('lute-connect', () => {
 // Import the mocked module
 import LuteConnect from 'lute-connect'
 
-function createWalletWithStore(store: Store<State>): LuteWallet {
+function createWalletWithStore(store: Store<AVMState>): LuteWallet {
   return new LuteWallet({
     id: WalletId.LUTE,
     options: {
@@ -73,8 +73,8 @@ interface MockLuteConnect {
 
 describe('LuteWallet', () => {
   let wallet: LuteWallet
-  let store: Store<State>
-  let mockInitialState: State | null = null
+  let store: Store<AVMState>
+  let mockInitialAVMState: AVMState | null = null
   let mockLogger: {
     debug: Mock
     info: Mock
@@ -108,15 +108,15 @@ describe('LuteWallet', () => {
     vi.mocked(LuteConnect).mockImplementation(() => mockLuteConnect)
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       return null
     })
 
     vi.mocked(StorageAdapter.setItem).mockImplementation((key: string, value: string) => {
       if (key === LOCAL_STORAGE_KEY) {
-        mockInitialState = JSON.parse(value)
+        mockInitialAVMState = JSON.parse(value)
       }
     })
 
@@ -128,13 +128,13 @@ describe('LuteWallet', () => {
     }
     vi.mocked(logger.createScopedLogger).mockReturnValue(mockLogger)
 
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
     wallet = createWalletWithStore(store)
   })
 
   afterEach(async () => {
     await wallet.disconnect()
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('connect', () => {
@@ -193,15 +193,15 @@ describe('LuteWallet', () => {
     })
 
     it('should resume session if session is found', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.LUTE]: walletState
+          [WalletId.LUTE]: walletAVMState
         }
       })
 
@@ -210,7 +210,7 @@ describe('LuteWallet', () => {
       await wallet.resumeSession()
 
       expect(wallet.isConnected).toBe(true)
-      expect(store.state.wallets[WalletId.LUTE]).toEqual(walletState)
+      expect(store.state.wallets[WalletId.LUTE]).toEqual(walletAVMState)
     })
   })
 

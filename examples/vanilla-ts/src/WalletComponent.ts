@@ -14,7 +14,7 @@ export class WalletComponent {
     this.element = document.createElement('div')
 
     this.unsubscribe = wallet.subscribe((state) => {
-      console.info('[App] State change:', state)
+      console.info('[App] AVMState change:', state)
       this.render()
     })
 

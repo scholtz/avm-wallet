@@ -7,8 +7,8 @@ import {
   NetworkId,
   WalletManager,
   WalletId,
-  defaultState,
-  type State,
+  defaultAVMState,
+  type AVMState,
   type WalletAccount
 } from 'avm-wallet'
 import { mount } from '@vue/test-utils'
@@ -69,7 +69,7 @@ vi.mock('vue', async (importOriginal) => {
   }
 })
 
-const mockStore = new Store<State>(defaultState)
+const mockStore = new Store<AVMState>(defaultAVMState)
 
 const mockDeflyWallet = new DeflyWallet({
   id: WalletId.DEFLY,
@@ -109,7 +109,7 @@ describe('useWallet', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    mockStore.setState(() => defaultState)
+    mockStore.setState(() => defaultAVMState)
 
     mockWalletManager = new WalletManager()
     mockWallets = [

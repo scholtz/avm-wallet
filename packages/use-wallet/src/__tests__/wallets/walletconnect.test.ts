@@ -4,7 +4,7 @@ import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { NetworkId, caipChainId } from 'src/network'
 import { StorageAdapter } from 'src/storage'
-import { LOCAL_STORAGE_KEY, State, WalletState, defaultState } from 'src/store'
+import { LOCAL_STORAGE_KEY, AVMState, WalletAVMState, defaultAVMState } from 'src/store'
 import { base64ToByteArray, byteArrayToBase64 } from 'src/utils'
 import { WalletConnect } from 'src/wallets/walletconnect'
 import { WalletId, WalletTransaction } from 'src/wallets/types'
@@ -108,7 +108,7 @@ function createMockSession(accounts: string[] = []): SessionTypes.Struct {
   }
 }
 
-function createWalletWithStore(store: Store<State>): WalletConnect {
+function createWalletWithStore(store: Store<AVMState>): WalletConnect {
   return new WalletConnect({
     id: WalletId.WALLETCONNECT,
     options: {
@@ -123,8 +123,8 @@ function createWalletWithStore(store: Store<State>): WalletConnect {
 
 describe('WalletConnect', () => {
   let wallet: WalletConnect
-  let store: Store<State>
-  let mockInitialState: State | null = null
+  let store: Store<AVMState>
+  let mockInitialAVMState: AVMState | null = null
   let mockLogger: {
     debug: Mock
     info: Mock
@@ -145,15 +145,15 @@ describe('WalletConnect', () => {
     vi.clearAllMocks()
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       return null
     })
 
     vi.mocked(StorageAdapter.setItem).mockImplementation((key: string, value: string) => {
       if (key === LOCAL_STORAGE_KEY) {
-        mockInitialState = JSON.parse(value)
+        mockInitialAVMState = JSON.parse(value)
       }
     })
 
@@ -165,13 +165,13 @@ describe('WalletConnect', () => {
     }
     vi.mocked(logger.createScopedLogger).mockReturnValue(mockLogger)
 
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
     wallet = createWalletWithStore(store)
   })
 
   afterEach(async () => {
     await wallet.disconnect()
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('connect', () => {
@@ -243,15 +243,15 @@ describe('WalletConnect', () => {
     })
 
     it('should resume session if session is found', async () => {
-      const walletState: WalletState = {
+      const walletAVMState: WalletAVMState = {
         accounts: [account1],
         activeAccount: account1
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.WALLETCONNECT]: walletState
+          [WalletId.WALLETCONNECT]: walletAVMState
         }
       })
 
@@ -267,12 +267,12 @@ describe('WalletConnect', () => {
       await wallet.resumeSession()
 
       expect(wallet.isConnected).toBe(true)
-      expect(store.state.wallets[WalletId.WALLETCONNECT]).toEqual(walletState)
+      expect(store.state.wallets[WalletId.WALLETCONNECT]).toEqual(walletAVMState)
     })
 
     it('should update the store if accounts do not match', async () => {
       // Stored accounts are '7ZUECA' and 'GD64YI'
-      const prevWalletState = {
+      const prevWalletAVMState = {
         accounts: [
           {
             name: 'WalletConnect Account 1',
@@ -289,10 +289,10 @@ describe('WalletConnect', () => {
         }
       }
 
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
-          [WalletId.WALLETCONNECT]: prevWalletState
+          [WalletId.WALLETCONNECT]: prevWalletAVMState
         }
       })
 
@@ -300,7 +300,7 @@ describe('WalletConnect', () => {
 
       const newAccounts = ['GD64YIY3TWGDMCNPP553DZPPR6LDUSFQOIJVFDPPXWEG3FVOJCCDBBHU5A']
 
-      const newWalletState: WalletState = {
+      const newWalletAVMState: WalletAVMState = {
         accounts: [
           {
             name: 'WalletConnect Account 1',
@@ -320,10 +320,10 @@ describe('WalletConnect', () => {
       await wallet.resumeSession()
 
       expect(mockLogger.warn).toHaveBeenCalledWith('Session accounts mismatch, updating accounts', {
-        prev: prevWalletState.accounts,
-        current: newWalletState.accounts
+        prev: prevWalletAVMState.accounts,
+        current: newWalletAVMState.accounts
       })
-      expect(store.state.wallets[WalletId.WALLETCONNECT]).toEqual(newWalletState)
+      expect(store.state.wallets[WalletId.WALLETCONNECT]).toEqual(newWalletAVMState)
     })
   })
 

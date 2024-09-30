@@ -4,7 +4,7 @@ import algosdk from 'algosdk'
 import { logger } from 'src/logger'
 import { NetworkId } from 'src/network'
 import { StorageAdapter } from 'src/storage'
-import { LOCAL_STORAGE_KEY, State, defaultState } from 'src/store'
+import { LOCAL_STORAGE_KEY, AVMState, defaultAVMState } from 'src/store'
 import { LOCAL_STORAGE_MNEMONIC_KEY, MnemonicWallet } from 'src/wallets/mnemonic'
 import { WalletId } from 'src/wallets/types'
 import type { Mock } from 'vitest'
@@ -34,7 +34,7 @@ vi.mock('src/storage', () => ({
   }
 }))
 
-function createWalletWithStore(store: Store<State>): MnemonicWallet {
+function createWalletWithStore(store: Store<AVMState>): MnemonicWallet {
   return new MnemonicWallet({
     id: WalletId.MNEMONIC,
     metadata: {},
@@ -46,8 +46,8 @@ function createWalletWithStore(store: Store<State>): MnemonicWallet {
 
 describe('MnemonicWallet', () => {
   let wallet: MnemonicWallet
-  let store: Store<State>
-  let mockInitialState: State | null = null
+  let store: Store<AVMState>
+  let mockInitialAVMState: AVMState | null = null
   let mockLogger: {
     debug: Mock
     info: Mock
@@ -76,8 +76,8 @@ describe('MnemonicWallet', () => {
     global.prompt = vi.fn().mockReturnValue(ACCOUNT_MNEMONIC)
 
     vi.mocked(StorageAdapter.getItem).mockImplementation((key: string) => {
-      if (key === LOCAL_STORAGE_KEY && mockInitialState !== null) {
-        return JSON.stringify(mockInitialState)
+      if (key === LOCAL_STORAGE_KEY && mockInitialAVMState !== null) {
+        return JSON.stringify(mockInitialAVMState)
       }
       if (key === LOCAL_STORAGE_MNEMONIC_KEY) {
         return ACCOUNT_MNEMONIC
@@ -87,7 +87,7 @@ describe('MnemonicWallet', () => {
 
     vi.mocked(StorageAdapter.setItem).mockImplementation((key: string, value: string) => {
       if (key === LOCAL_STORAGE_KEY) {
-        mockInitialState = JSON.parse(value)
+        mockInitialAVMState = JSON.parse(value)
       }
     })
 
@@ -99,14 +99,14 @@ describe('MnemonicWallet', () => {
     }
     vi.mocked(logger.createScopedLogger).mockReturnValue(mockLogger)
 
-    store = new Store<State>(defaultState)
+    store = new Store<AVMState>(defaultAVMState)
     wallet = createWalletWithStore(store)
   })
 
   afterEach(async () => {
     global.prompt = vi.fn()
     await wallet.disconnect()
-    mockInitialState = null
+    mockInitialAVMState = null
   })
 
   describe('connect', () => {
@@ -147,8 +147,8 @@ describe('MnemonicWallet', () => {
     })
 
     it('should disconnect if session is found', async () => {
-      store = new Store<State>({
-        ...defaultState,
+      store = new Store<AVMState>({
+        ...defaultAVMState,
         wallets: {
           [WalletId.MNEMONIC]: {
             accounts: [account1],
