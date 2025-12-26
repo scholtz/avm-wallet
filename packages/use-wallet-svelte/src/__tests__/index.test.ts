@@ -13,7 +13,7 @@ import {
   type SignDataResponse,
   ScopeType,
   ManagerStatus
-} from '@txnlab/use-wallet'
+} from 'avm-wallet'
 import algosdk from 'algosdk'
 import { getContext, setContext } from 'svelte'
 import type { Mock } from 'vitest'
@@ -73,8 +73,8 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@txnlab/use-wallet', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('@txnlab/use-wallet')>()
+vi.mock('avm-wallet', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('avm-wallet')>()
   return {
     ...mod,
     LuteWallet: class extends mod.BaseWallet {
@@ -108,7 +108,7 @@ let mockLuteWallet: LuteWallet
 const setupMocks = () => {
   mockStore = new Store<State>({
     activeNetwork: NetworkId.TESTNET,
-    activeWallet: null,
+    avmActiveWallet: null,
     algodClient: new algosdk.Algodv2('', 'https://testnet-api.algonode.cloud', ''),
     managerStatus: 'ready',
     wallets: {},
@@ -162,7 +162,7 @@ beforeEach(() => {
   mockStore.setState((state) => ({
     ...state,
     activeNetwork: NetworkId.TESTNET,
-    activeWallet: null,
+    avmActiveWallet: null,
     algodClient: new algosdk.Algodv2('', 'https://testnet-api.algonode.cloud', ''),
     managerStatus: 'ready',
     wallets: {},
@@ -330,9 +330,9 @@ describe('useWallet', () => {
     expect(Array.isArray(wallet.wallets)).toBe(true)
     expect(typeof wallet.isReady).toBe('function')
     expect(wallet.algodClient).toBeDefined()
-    expect(typeof wallet.activeWallet).toBe('function')
-    expect(wallet.activeWalletAccounts).toBeDefined()
-    expect(wallet.activeWalletAddresses).toBeDefined()
+    expect(typeof wallet.avmActiveWallet).toBe('function')
+    expect(wallet.avmActiveWalletAccounts).toBeDefined()
+    expect(wallet.avmActiveWalletAddresses).toBeDefined()
     expect(wallet.activeAccount).toBeDefined()
     expect(wallet.activeAddress).toBeDefined()
     expect(typeof wallet.signData).toBe('function')
@@ -392,7 +392,7 @@ describe('useWallet', () => {
     // Set active wallet
     mockStore.setState((state) => ({
       ...state,
-      activeWallet: WalletId.LUTE
+      avmActiveWallet: WalletId.LUTE
     }))
 
     expect(luteWallet.isActive()).toBe(true)
@@ -432,12 +432,12 @@ describe('useWallet', () => {
     const wallet = useWallet()
 
     // Initially no active wallet
-    expect(wallet.activeWallet()).toBeUndefined()
+    expect(wallet.avmActiveWallet()).toBeUndefined()
 
     // Set active wallet with accounts
     mockStore.setState((state) => ({
       ...state,
-      activeWallet: WalletId.LUTE,
+      avmActiveWallet: WalletId.LUTE,
       wallets: {
         ...state.wallets,
         [WalletId.LUTE]: {
@@ -447,12 +447,12 @@ describe('useWallet', () => {
       }
     }))
 
-    const activeWallet = wallet.activeWallet()
-    expect(activeWallet).toBeDefined()
-    expect(activeWallet!.id).toBe(WalletId.LUTE)
+    const avmActiveWallet = wallet.avmActiveWallet()
+    expect(avmActiveWallet).toBeDefined()
+    expect(avmActiveWallet!.id).toBe(WalletId.LUTE)
 
-    expect(wallet.activeWalletAccounts.current).toEqual([testAccount1, testAccount2])
-    expect(wallet.activeWalletAddresses.current).toEqual(['address1', 'address2'])
+    expect(wallet.avmActiveWalletAccounts.current).toEqual([testAccount1, testAccount2])
+    expect(wallet.avmActiveWalletAddresses.current).toEqual(['address1', 'address2'])
     expect(wallet.activeAccount.current).toBe(testAccount1)
     expect(wallet.activeAddress.current).toBe('address1')
   })
@@ -469,7 +469,7 @@ describe('useWallet', () => {
     // Set active wallet
     mockStore.setState((state) => ({
       ...state,
-      activeWallet: WalletId.LUTE
+      avmActiveWallet: WalletId.LUTE
     }))
 
     const txns = [] as algosdk.Transaction[]
@@ -492,7 +492,7 @@ describe('useWallet', () => {
     // Set active wallet
     mockStore.setState((state) => ({
       ...state,
-      activeWallet: WalletId.LUTE
+      avmActiveWallet: WalletId.LUTE
     }))
 
     const txns = [] as algosdk.Transaction[]
@@ -517,7 +517,7 @@ describe('useWallet', () => {
     // Set active wallet
     mockStore.setState((state) => ({
       ...state,
-      activeWallet: WalletId.LUTE
+      avmActiveWallet: WalletId.LUTE
     }))
 
     const data = 'test-data'

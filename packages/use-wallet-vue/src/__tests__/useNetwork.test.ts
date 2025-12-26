@@ -6,7 +6,7 @@ import {
   DEFAULT_NETWORK_CONFIG,
   type AlgodConfig,
   type State
-} from '@txnlab/use-wallet'
+} from 'avm-wallet'
 import { mount } from '@vue/test-utils'
 import algosdk from 'algosdk'
 import { computed, inject, nextTick, ref, type InjectionKey } from 'vue'
@@ -33,7 +33,7 @@ const mockSetAlgodClient = (client: algosdk.Algodv2) => {
 const setupMocks = () => {
   mockStore = new Store<State>({
     activeNetwork: NetworkId.TESTNET,
-    activeWallet: null,
+    avmActiveWallet: null,
     algodClient: new algosdk.Algodv2('', 'https://testnet-api.algonode.cloud', ''),
     managerStatus: 'ready',
     wallets: {},
@@ -60,7 +60,7 @@ beforeEach(() => {
   mockStore.setState((state) => ({
     ...state,
     activeNetwork: NetworkId.TESTNET,
-    activeWallet: null,
+    avmActiveWallet: null,
     algodClient: new algosdk.Algodv2('', 'https://testnet-api.algonode.cloud', ''),
     managerStatus: 'ready',
     networkConfig: { ...DEFAULT_NETWORK_CONFIG },

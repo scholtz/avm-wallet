@@ -61,7 +61,7 @@ export class PeraWallet extends BaseWallet {
 
   public connect = async (): Promise<WalletAccount[]> => {
     this.logger.info('Connecting...')
-    const currentActiveWallet = this.store.state.activeWallet
+    const currentActiveWallet = this.store.state.avmActiveWallet
     if (currentActiveWallet && currentActiveWallet !== this.id) {
       this.manageWalletConnectSession('backup', currentActiveWallet)
     }
@@ -101,7 +101,7 @@ export class PeraWallet extends BaseWallet {
     this.logger.info('Disconnecting...')
     const client = this.client || (await this.initializeClient())
 
-    const currentActiveWallet = this.store.state.activeWallet
+    const currentActiveWallet = this.store.state.avmActiveWallet
     if (currentActiveWallet && currentActiveWallet !== this.id) {
       this.manageWalletConnectSession('backup', currentActiveWallet)
       this.manageWalletConnectSession('restore', this.id)
@@ -119,7 +119,7 @@ export class PeraWallet extends BaseWallet {
 
   public setActive = (): void => {
     this.logger.info(`Set active wallet: ${this.id}`)
-    const currentActiveWallet = this.store.state.activeWallet
+    const currentActiveWallet = this.store.state.avmActiveWallet
     if (currentActiveWallet && currentActiveWallet === WalletId.DEFLY) {
       this.manageWalletConnectSession('backup', currentActiveWallet)
     }
@@ -135,7 +135,7 @@ export class PeraWallet extends BaseWallet {
       // Check for Pera Discover browser and auto-connect if no other wallet is active
       if (typeof window !== 'undefined' && window.navigator) {
         const isPeraDiscover = window.navigator.userAgent.includes('pera')
-        if (isPeraDiscover && !walletState && !state.activeWallet) {
+        if (isPeraDiscover && !walletState && !state.avmActiveWallet) {
           this.logger.info('Pera Discover browser detected, attempting auto-connect...')
           try {
             await this.connect()
@@ -154,7 +154,7 @@ export class PeraWallet extends BaseWallet {
       }
 
       // If Defly is active, skip reconnectSession for Pera
-      if (state.activeWallet === WalletId.DEFLY) {
+      if (state.avmActiveWallet === WalletId.DEFLY) {
         this.logger.info('Skipping reconnectSession for Pera (inactive)')
         return
       }

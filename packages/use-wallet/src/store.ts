@@ -15,7 +15,7 @@ export type ManagerStatus = 'initializing' | 'ready'
 
 export interface State {
   wallets: WalletStateMap
-  activeWallet: WalletId | null
+  avmActiveWallet: WalletId | null
   activeNetwork: string
   algodClient: algosdk.Algodv2
   managerStatus: ManagerStatus
@@ -25,7 +25,7 @@ export interface State {
 
 export const DEFAULT_STATE: State = {
   wallets: {},
-  activeWallet: null,
+  avmActiveWallet: null,
   activeNetwork: 'testnet',
   algodClient: new algosdk.Algodv2('', 'https://testnet-api.4160.nodely.dev/'),
   managerStatus: 'initializing',
@@ -35,7 +35,7 @@ export const DEFAULT_STATE: State = {
 
 export type PersistedState = Omit<State, 'algodClient' | 'managerStatus' | 'networkConfig'>
 
-export const LOCAL_STORAGE_KEY = '@txnlab/use-wallet:v4'
+export const LOCAL_STORAGE_KEY = 'avm-wallet:v4'
 
 // State mutations
 
@@ -55,7 +55,7 @@ export function addWallet(
     return {
       ...state,
       wallets: updatedWallets,
-      activeWallet: walletId
+      avmActiveWallet: walletId
     }
   })
 }
@@ -68,7 +68,7 @@ export function removeWallet(store: Store<State>, { walletId }: { walletId: Wall
     return {
       ...state,
       wallets: updatedWallets,
-      activeWallet: state.activeWallet === walletId ? null : state.activeWallet
+      avmActiveWallet: state.avmActiveWallet === walletId ? null : state.avmActiveWallet
     }
   })
 }
@@ -76,7 +76,7 @@ export function removeWallet(store: Store<State>, { walletId }: { walletId: Wall
 export function setActiveWallet(store: Store<State>, { walletId }: { walletId: WalletId | null }) {
   store.setState((state) => ({
     ...state,
-    activeWallet: walletId
+    avmActiveWallet: walletId
   }))
 }
 
@@ -195,7 +195,7 @@ export function isValidPersistedState(state: unknown): state is PersistedState {
     typeof state === 'object' &&
     state !== null &&
     'wallets' in state &&
-    'activeWallet' in state &&
+    'avmActiveWallet' in state &&
     'activeNetwork' in state &&
     (!('customNetworkConfigs' in state) ||
       (typeof state.customNetworkConfigs === 'object' && state.customNetworkConfigs !== null))

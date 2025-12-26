@@ -12,7 +12,7 @@ import NetworkControls from './components/NetworkControls.vue'
       <img src="/vue.svg" class="logo vue" alt="Vue logo" />
     </a>
   </div>
-  <h1>@txnlab/use-wallet-vue</h1>
+  <h1>avm-wallet-vue</h1>
   <NetworkControls />
   <Connect />
 </template>

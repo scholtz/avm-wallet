@@ -11,9 +11,9 @@ import {
   WalletId,
   WalletManager,
   WalletMetadata
-} from '@txnlab/use-wallet'
+} from 'avm-wallet'
 
-export * from '@txnlab/use-wallet'
+export * from 'avm-wallet'
 
 export const useWalletContext = (manager: WalletManager) => {
   setContext('walletManager', manager)
@@ -132,7 +132,7 @@ export const useWallet = () => {
       metadata: wallet.metadata,
       accounts: useStore(manager.store, (state) => state.wallets[wallet.id]?.accounts),
       isConnected: () => !!walletStore.current[wallet.id],
-      isActive: () => wallet.id === activeWalletId.current,
+      isActive: () => wallet.id === avmActiveWalletId.current,
       canSignData: wallet.canSignData ?? false,
       connect: (args) => wallet.connect(args),
       disconnect: () => wallet.disconnect(),
@@ -142,32 +142,32 @@ export const useWallet = () => {
   }
 
   const wallets = [...manager.wallets].map(transformToWallet)
-  const activeWalletId = useStore(manager.store, (state) => state.activeWallet)
+  const avmActiveWalletId = useStore(manager.store, (state) => state.avmActiveWallet)
   const managerStatus = useStore(manager.store, (state) => state.managerStatus)
   const isReady = () => managerStatus.current === 'ready'
   const algodClient = useStore(manager.store, (state) => state.algodClient)
-  const activeWallet = () => wallets.find((w) => w.id === activeWalletId.current)
-  const activeWalletAccounts = useStore(
+  const avmActiveWallet = () => wallets.find((w) => w.id === avmActiveWalletId.current)
+  const avmActiveWalletAccounts = useStore(
     manager.store,
-    (state) => state.wallets[activeWalletId.current!]?.accounts
+    (state) => state.wallets[avmActiveWalletId.current!]?.accounts
   )
-  const activeWalletAddresses = useStore(manager.store, (state) =>
-    state.wallets[activeWalletId.current!]?.accounts.map((account) => account.address)
+  const avmActiveWalletAddresses = useStore(manager.store, (state) =>
+    state.wallets[avmActiveWalletId.current!]?.accounts.map((account) => account.address)
   )
   const activeAccount = useStore(
     manager.store,
-    (state) => state.wallets[activeWalletId.current!]?.activeAccount
+    (state) => state.wallets[avmActiveWalletId.current!]?.activeAccount
   )
   const activeAddress = useStore(
     manager.store,
-    (state) => state.wallets[activeWalletId.current!]?.activeAccount?.address
+    (state) => state.wallets[avmActiveWalletId.current!]?.activeAccount?.address
   )
 
   const signTransactions = <T extends algosdk.Transaction[] | Uint8Array[]>(
     txnGroup: T | T[],
     indexesToSign?: number[]
   ): Promise<(Uint8Array | null)[]> => {
-    const wallet = manager.wallets.find((w) => w.id === activeWalletId.current)
+    const wallet = manager.wallets.find((w) => w.id === avmActiveWalletId.current)
     if (!wallet) {
       throw new Error('No active wallet')
     }
@@ -178,7 +178,7 @@ export const useWallet = () => {
     txnGroup: algosdk.Transaction[],
     indexesToSign: number[]
   ): Promise<Uint8Array[]> => {
-    const wallet = manager.wallets.find((w) => w.id === activeWalletId.current)
+    const wallet = manager.wallets.find((w) => w.id === avmActiveWalletId.current)
     if (!wallet) {
       throw new Error('No active wallet')
     }
@@ -186,7 +186,7 @@ export const useWallet = () => {
   }
 
   const signData = (data: string, metadata: SignMetadata): Promise<SignDataResponse> => {
-    const wallet = manager.wallets.find((w) => w.id === activeWalletId.current)
+    const wallet = manager.wallets.find((w) => w.id === avmActiveWalletId.current)
     if (!wallet) {
       throw new Error('No active wallet')
     }
@@ -197,9 +197,9 @@ export const useWallet = () => {
     wallets,
     isReady,
     algodClient,
-    activeWallet,
-    activeWalletAccounts,
-    activeWalletAddresses,
+    avmActiveWallet,
+    avmActiveWalletAccounts,
+    avmActiveWalletAddresses,
     activeAccount,
     activeAddress,
     signData,

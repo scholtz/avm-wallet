@@ -1,4 +1,4 @@
-import { AlgodConfig, NetworkId, useNetwork } from '@txnlab/use-wallet-solid'
+import { AlgodConfig, NetworkId, useNetwork } from 'avm-wallet-solid'
 import { createSignal, createEffect } from 'solid-js'
 
 export function NetworkControls() {

@@ -1,5 +1,5 @@
 {
-  "name": "use-wallet-example-nuxt",
+  "name": "example-avm-wallet-nuxt",
   "type": "module",
   "scripts": {
     "build": "nuxt build",
@@ -15,8 +15,8 @@
     "@blockshake/defly-connect": "^1.2.1",
     "@noble/ed25519": "2.3.0",
     "@perawallet/connect": "^1.4.1",
-    "@txnlab/use-wallet": "workspace:*",
-    "@txnlab/use-wallet-vue": "workspace:*",
+    "avm-wallet": "workspace:*",
+    "avm-wallet-vue": "workspace:*",
     "@walletconnect/modal": "^2.7.0",
     "@walletconnect/sign-client": "^2.21.8",
     "algosdk": "3.4.0",

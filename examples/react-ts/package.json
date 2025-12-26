@@ -1,5 +1,5 @@
 {
-  "name": "use-wallet-example-react",
+  "name": "example-avm-wallet-react",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,7 @@
     "@blockshake/defly-connect": "^1.2.1",
     "@noble/ed25519": "2.3.0",
     "@perawallet/connect": "^1.4.1",
-    "@txnlab/use-wallet-react": "workspace:*",
+    "avm-wallet-react": "workspace:*",
     "@walletconnect/modal": "^2.7.0",
     "@walletconnect/sign-client": "^2.21.8",
     "algosdk": "3.4.0",

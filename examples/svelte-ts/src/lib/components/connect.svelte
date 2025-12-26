@@ -7,7 +7,7 @@
     WalletId,
     type Siwa,
     type Wallet
-  } from '@txnlab/use-wallet-svelte'
+  } from 'avm-wallet-svelte'
   import algosdk from 'algosdk'
   import { canonify } from 'canonify'
 

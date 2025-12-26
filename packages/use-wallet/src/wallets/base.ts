@@ -136,7 +136,7 @@ export abstract class BaseWallet {
 
   public get isActive(): boolean {
     const state = this.store.state
-    return state.activeWallet === this.id
+    return state.avmActiveWallet === this.id
   }
 
   public get activeNetworkConfig(): NetworkConfig {

@@ -10,7 +10,7 @@ import {
   DEFAULT_STATE,
   type State,
   type WalletAccount
-} from '@txnlab/use-wallet'
+} from 'avm-wallet'
 import algosdk from 'algosdk'
 import * as React from 'react'
 import { Wallet, WalletProvider, useWallet, useNetwork } from '../index'
@@ -27,8 +27,8 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@txnlab/use-wallet', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('@txnlab/use-wallet')>()
+vi.mock('avm-wallet', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('avm-wallet')>()
   return {
     ...mod,
     DeflyWallet: class extends mod.BaseWallet {
@@ -490,7 +490,7 @@ describe('useWallet', () => {
     })
 
     expect(result.current.wallets).toEqual(mockWallets)
-    expect(result.current.activeWallet).toBeNull()
+    expect(result.current.avmActiveWallet).toBeNull()
     expect(result.current.activeAccount).toBeNull()
   })
 
@@ -563,7 +563,7 @@ describe('useWallet', () => {
             }
           }
         },
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
     })
 
@@ -589,11 +589,11 @@ describe('useWallet', () => {
             activeAccount: { name: 'Account 1', address: 'address1' }
           }
         },
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
     })
 
-    expect(result.current.activeWallet?.id).toBe(WalletId.DEFLY)
+    expect(result.current.avmActiveWallet?.id).toBe(WalletId.DEFLY)
     expect(result.current.activeAddress).toBe('address1')
   })
 
@@ -645,9 +645,9 @@ describe('useWallet', () => {
     function TestComponent() {
       const {
         wallets,
-        activeWallet,
-        activeWalletAccounts,
-        activeWalletAddresses,
+        avmActiveWallet,
+        avmActiveWalletAccounts,
+        avmActiveWalletAddresses,
         activeAccount,
         activeAddress,
         isReady,
@@ -668,12 +668,12 @@ describe('useWallet', () => {
           </ul>
           <div data-testid="is-ready">Is Ready: {JSON.stringify(isReady)}</div>
           <div data-testid="active-network">Active Network: {JSON.stringify(activeNetwork)}</div>
-          <div data-testid="active-wallet">Active Wallet: {JSON.stringify(activeWallet)}</div>
+          <div data-testid="active-wallet">Active Wallet: {JSON.stringify(avmActiveWallet)}</div>
           <div data-testid="active-wallet-accounts">
-            Active Wallet Accounts: {JSON.stringify(activeWalletAccounts)}
+            Active Wallet Accounts: {JSON.stringify(avmActiveWalletAccounts)}
           </div>
           <div data-testid="active-wallet-addresses">
-            Active Wallet Addresses: {JSON.stringify(activeWalletAddresses)}
+            Active Wallet Addresses: {JSON.stringify(avmActiveWalletAddresses)}
           </div>
           <div data-testid="active-account">Active Account: {JSON.stringify(activeAccount)}</div>
           <div data-testid="active-address">Active Address: {JSON.stringify(activeAddress)}</div>
@@ -734,7 +734,7 @@ describe('useWallet', () => {
             }
           }
         },
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
     })
 

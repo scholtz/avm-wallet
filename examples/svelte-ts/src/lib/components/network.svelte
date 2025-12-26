@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { NetworkId, useNetwork } from '@txnlab/use-wallet-svelte'
+  import { NetworkId, useNetwork } from 'avm-wallet-svelte'
   const { activeNetwork, setActiveNetwork } = useNetwork()
 </script>
 

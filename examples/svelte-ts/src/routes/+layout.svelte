@@ -1,6 +1,6 @@
 <script lang="ts">
   import '../app.css'
-  import { NetworkId, useWalletContext, WalletId, WalletManager } from '@txnlab/use-wallet-svelte'
+  import { NetworkId, useWalletContext, WalletId, WalletManager } from 'avm-wallet-svelte'
 
   const manager = new WalletManager({
     wallets: [

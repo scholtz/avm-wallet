@@ -1,7 +1,7 @@
 <script lang="ts">
   import Connect from '$lib/components/connect.svelte'
   import Network from '$lib/components/network.svelte'
-  import { useWallet } from '@txnlab/use-wallet-svelte'
+  import { useWallet } from 'avm-wallet-svelte'
   const { wallets } = useWallet()
 </script>
 
@@ -12,7 +12,7 @@
   <a href="https://svelte.dev/" target="_blank">
     <img src="./svelte.svg" class="logo svelte" alt="Svelte logo" />
   </a>
-  <h1>@txnlab/use-wallet-svelte</h1>
+  <h1>avm-wallet-svelte</h1>
   <Network />
   {#each wallets as wallet}
     <Connect {wallet} />

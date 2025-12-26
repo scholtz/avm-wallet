@@ -11,7 +11,7 @@ export default mergeConfig(
       })
     ],
     test: {
-      name: 'use-wallet-solid',
+      name: 'avm-wallet-solid',
       dir: './src',
       watch: false,
       environment: 'jsdom',

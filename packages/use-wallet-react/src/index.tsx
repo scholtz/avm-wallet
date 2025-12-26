@@ -9,11 +9,11 @@ import {
   type BaseWallet,
   type WalletAccount,
   type WalletMetadata
-} from '@txnlab/use-wallet'
+} from 'avm-wallet'
 import algosdk from 'algosdk'
 import * as React from 'react'
 
-export * from '@txnlab/use-wallet'
+export * from 'avm-wallet'
 
 interface IWalletContext {
   manager: WalletManager
@@ -149,7 +149,7 @@ export const useWallet = () => {
   const isReady = managerStatus === 'ready'
 
   const walletStateMap = useStore(manager.store, (state) => state.wallets)
-  const activeWalletId = useStore(manager.store, (state) => state.activeWallet)
+  const avmActiveWalletId = useStore(manager.store, (state) => state.avmActiveWallet)
 
   const transformToWallet = React.useCallback(
     (wallet: BaseWallet): Wallet => {
@@ -160,7 +160,7 @@ export const useWallet = () => {
         accounts: walletState?.accounts ?? [],
         activeAccount: walletState?.activeAccount ?? null,
         isConnected: !!walletState,
-        isActive: wallet.id === activeWalletId,
+        isActive: wallet.id === avmActiveWalletId,
         canSignData: wallet.canSignData ?? false,
         connect: (args) => wallet.connect(args),
         disconnect: () => wallet.disconnect(),
@@ -168,21 +168,21 @@ export const useWallet = () => {
         setActiveAccount: (addr) => wallet.setActiveAccount(addr)
       }
     },
-    [walletStateMap, activeWalletId]
+    [walletStateMap, avmActiveWalletId]
   )
 
   const wallets = React.useMemo(() => {
     return [...manager.wallets.values()].map(transformToWallet)
   }, [manager, transformToWallet])
 
-  const activeBaseWallet = activeWalletId ? manager.getWallet(activeWalletId) || null : null
-  const activeWallet = React.useMemo(() => {
+  const activeBaseWallet = avmActiveWalletId ? manager.getWallet(avmActiveWalletId) || null : null
+  const avmActiveWallet = React.useMemo(() => {
     return activeBaseWallet ? transformToWallet(activeBaseWallet) : null
   }, [activeBaseWallet, transformToWallet])
 
-  const activeWalletAccounts = activeWallet?.accounts ?? null
-  const activeWalletAddresses = activeWalletAccounts?.map((account) => account.address) ?? null
-  const activeAccount = activeWallet?.activeAccount ?? null
+  const avmActiveWalletAccounts = avmActiveWallet?.accounts ?? null
+  const avmActiveWalletAddresses = avmActiveWalletAccounts?.map((account) => account.address) ?? null
+  const activeAccount = avmActiveWallet?.activeAccount ?? null
   const activeAddress = activeAccount?.address ?? null
 
   const signTransactions = <T extends algosdk.Transaction[] | Uint8Array[]>(
@@ -217,9 +217,9 @@ export const useWallet = () => {
     isReady,
     algodClient,
     setAlgodClient,
-    activeWallet,
-    activeWalletAccounts,
-    activeWalletAddresses,
+    avmActiveWallet,
+    avmActiveWalletAccounts,
+    avmActiveWalletAddresses,
     activeAccount,
     activeAddress,
     signData,

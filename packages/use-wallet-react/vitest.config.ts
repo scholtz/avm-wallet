@@ -5,7 +5,7 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
-      name: 'use-wallet-react',
+      name: 'avm-wallet-react',
       dir: './src',
       watch: false,
       environment: 'jsdom',

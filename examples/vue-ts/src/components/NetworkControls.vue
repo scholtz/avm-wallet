@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AlgodConfig, NetworkId, useNetwork } from '@txnlab/use-wallet-vue'
+import { AlgodConfig, NetworkId, useNetwork } from 'avm-wallet-vue'
 import { ref, reactive, watch } from 'vue'
 
 const {

@@ -83,9 +83,6 @@ importers:
       '@perawallet/connect':
         specifier: ^1.4.1
         version: 1.4.1(algosdk@3.4.0)
-      '@txnlab/use-wallet-react':
-        specifier: workspace:*
-        version: link:../../packages/use-wallet-react
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
@@ -95,6 +92,9 @@ importers:
       algosdk:
         specifier: 3.4.0
         version: 3.4.0
+      avm-wallet-react:
+        specifier: workspace:*
+        version: link:../../packages/use-wallet-react
       canonify:
         specifier: 2.1.1
         version: 2.1.1
@@ -141,12 +141,6 @@ importers:
       '@perawallet/connect':
         specifier: ^1.4.1
         version: 1.4.1(algosdk@3.4.0)
-      '@txnlab/use-wallet':
-        specifier: workspace:*
-        version: link:../../packages/use-wallet
-      '@txnlab/use-wallet-vue':
-        specifier: workspace:*
-        version: link:../../packages/use-wallet-vue
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
@@ -156,6 +150,12 @@ importers:
       algosdk:
         specifier: 3.4.0
         version: 3.4.0
+      avm-wallet:
+        specifier: workspace:*
+        version: link:../../packages/use-wallet
+      avm-wallet-vue:
+        specifier: workspace:*
+        version: link:../../packages/use-wallet-vue
       canonify:
         specifier: 2.1.1
         version: 2.1.1
@@ -193,9 +193,6 @@ importers:
       '@perawallet/connect':
         specifier: ^1.4.1
         version: 1.4.1(algosdk@3.4.0)
-      '@txnlab/use-wallet-react':
-        specifier: workspace:*
-        version: link:../../packages/use-wallet-react
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
@@ -205,6 +202,9 @@ importers:
       algosdk:
         specifier: 3.4.0
         version: 3.4.0
+      avm-wallet-react:
+        specifier: workspace:*
+        version: link:../../packages/use-wallet-react
       canonify:
         specifier: 2.1.1
         version: 2.1.1
@@ -263,9 +263,6 @@ importers:
       '@perawallet/connect':
         specifier: ^1.4.1
         version: 1.4.1(algosdk@3.4.0)
-      '@txnlab/use-wallet-solid':
-        specifier: workspace:*
-        version: link:../../packages/use-wallet-solid
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
@@ -275,6 +272,9 @@ importers:
       algosdk:
         specifier: 3.4.0
         version: 3.4.0
+      avm-wallet-solid:
+        specifier: workspace:*
+        version: link:../../packages/use-wallet-solid
       canonify:
         specifier: 2.1.1
         version: 2.1.1
@@ -309,9 +309,6 @@ importers:
       '@perawallet/connect':
         specifier: ^1.4.1
         version: 1.4.1(algosdk@3.4.0)
-      '@txnlab/use-wallet-svelte':
-        specifier: workspace:*
-        version: link:../../packages/use-wallet-svelte
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
@@ -321,6 +318,9 @@ importers:
       algosdk:
         specifier: 3.4.0
         version: 3.4.0
+      avm-wallet-svelte:
+        specifier: workspace:*
+        version: link:../../packages/use-wallet-svelte
       canonify:
         specifier: 2.1.1
         version: 2.1.1
@@ -364,9 +364,6 @@ importers:
       '@perawallet/connect':
         specifier: ^1.4.1
         version: 1.4.1(algosdk@3.4.0)
-      '@txnlab/use-wallet':
-        specifier: workspace:*
-        version: link:../../packages/use-wallet
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
@@ -376,6 +373,9 @@ importers:
       algosdk:
         specifier: 3.4.0
         version: 3.4.0
+      avm-wallet:
+        specifier: workspace:*
+        version: link:../../packages/use-wallet
       canonify:
         specifier: 2.1.1
         version: 2.1.1
@@ -407,9 +407,6 @@ importers:
       '@perawallet/connect':
         specifier: ^1.4.1
         version: 1.4.1(algosdk@3.4.0)
-      '@txnlab/use-wallet-vue':
-        specifier: workspace:*
-        version: link:../../packages/use-wallet-vue
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
@@ -419,6 +416,9 @@ importers:
       algosdk:
         specifier: 3.4.0
         version: 3.4.0
+      avm-wallet-vue:
+        specifier: workspace:*
+        version: link:../../packages/use-wallet-vue
       canonify:
         specifier: 2.1.1
         version: 2.1.1
@@ -514,15 +514,15 @@ importers:
       '@tanstack/react-store':
         specifier: 0.7.3
         version: 0.7.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@txnlab/use-wallet':
-        specifier: workspace:*
-        version: link:../use-wallet
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
       '@walletconnect/sign-client':
         specifier: ^2.21.8
         version: 2.21.8(@netlify/blobs@9.1.2)(db0@0.3.2)(ioredis@5.7.0)(typescript@5.8.3)(zod@3.25.76)
+      avm-wallet:
+        specifier: workspace:*
+        version: link:../use-wallet
       lute-connect:
         specifier: ^1.6.2
         version: 1.6.2
@@ -566,15 +566,15 @@ importers:
       '@tanstack/solid-store':
         specifier: 0.7.3
         version: 0.7.3(solid-js@1.9.9)
-      '@txnlab/use-wallet':
-        specifier: workspace:*
-        version: link:../use-wallet
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
       '@walletconnect/sign-client':
         specifier: ^2.21.8
         version: 2.21.8(@netlify/blobs@9.1.2)(db0@0.3.2)(ioredis@5.7.0)(typescript@5.8.3)(zod@3.25.76)
+      avm-wallet:
+        specifier: workspace:*
+        version: link:../use-wallet
       lute-connect:
         specifier: ^1.6.2
         version: 1.6.2
@@ -615,15 +615,15 @@ importers:
       '@tanstack/svelte-store':
         specifier: 0.7.3
         version: 0.7.3(svelte@5.38.1)
-      '@txnlab/use-wallet':
-        specifier: workspace:*
-        version: link:../use-wallet
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
       '@walletconnect/sign-client':
         specifier: ^2.21.8
         version: 2.21.8(@netlify/blobs@9.1.2)(db0@0.3.2)(ioredis@5.7.0)(typescript@5.8.3)(zod@3.25.76)
+      avm-wallet:
+        specifier: workspace:*
+        version: link:../use-wallet
       lute-connect:
         specifier: ^1.6.2
         version: 1.6.2
@@ -661,15 +661,15 @@ importers:
       '@tanstack/vue-store':
         specifier: 0.7.3
         version: 0.7.3(vue@3.5.18(typescript@5.8.3))
-      '@txnlab/use-wallet':
-        specifier: workspace:*
-        version: link:../use-wallet
       '@walletconnect/modal':
         specifier: ^2.7.0
         version: 2.7.0(@types/react@18.3.23)(react@18.3.1)
       '@walletconnect/sign-client':
         specifier: ^2.21.8
         version: 2.21.8(@netlify/blobs@9.1.2)(db0@0.3.2)(ioredis@5.7.0)(typescript@5.8.3)(zod@3.25.76)
+      avm-wallet:
+        specifier: workspace:*
+        version: link:../use-wallet
       lute-connect:
         specifier: ^1.6.2
         version: 1.6.2
@@ -10904,7 +10904,7 @@ snapshots:
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.57.1)
@@ -10938,7 +10938,7 @@ snapshots:
       tinyglobby: 0.2.14
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -10953,7 +10953,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.39.1(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9

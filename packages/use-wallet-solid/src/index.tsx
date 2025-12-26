@@ -9,9 +9,9 @@ import type {
   WalletId,
   WalletManager,
   WalletState
-} from '@txnlab/use-wallet'
+} from 'avm-wallet'
 
-export * from '@txnlab/use-wallet'
+export * from 'avm-wallet'
 
 interface WalletProviderProps {
   manager: WalletManager
@@ -129,15 +129,15 @@ export const useWallet = () => {
 
   const walletStore = useStore(manager().store, (state) => state.wallets)
   const walletState = (walletId: WalletId): WalletState | null => walletStore()[walletId] || null
-  const activeWalletId = useStore(manager().store, (state) => state.activeWallet)
-  const activeWallet = () => manager().getWallet(activeWalletId() as WalletId) || null
-  const activeWalletState = () => walletState(activeWalletId() as WalletId)
-  const activeWalletAccounts = () => activeWalletState()?.accounts ?? null
-  const activeWalletAddresses = () =>
-    activeWalletAccounts()?.map((account) => account.address) ?? null
-  const activeAccount = () => activeWalletState()?.activeAccount ?? null
+  const avmActiveWalletId = useStore(manager().store, (state) => state.avmActiveWallet)
+  const avmActiveWallet = () => manager().getWallet(avmActiveWalletId() as WalletId) || null
+  const avmActiveWalletState = () => walletState(avmActiveWalletId() as WalletId)
+  const avmActiveWalletAccounts = () => avmActiveWalletState()?.accounts ?? null
+  const avmActiveWalletAddresses = () =>
+    avmActiveWalletAccounts()?.map((account) => account.address) ?? null
+  const activeAccount = () => avmActiveWalletState()?.activeAccount ?? null
   const activeAddress = () => activeAccount()?.address ?? null
-  const isWalletActive = (walletId: WalletId) => walletId === activeWalletId()
+  const isWalletActive = (walletId: WalletId) => walletId === avmActiveWalletId()
   const isWalletConnected = (walletId: WalletId) =>
     !!walletState(walletId)?.accounts.length || false
 
@@ -145,7 +145,7 @@ export const useWallet = () => {
     txnGroup: T | T[],
     indexesToSign?: number[]
   ): Promise<(Uint8Array | null)[]> => {
-    const wallet = activeWallet()
+    const wallet = avmActiveWallet()
     if (!wallet) {
       throw new Error('No active wallet')
     }
@@ -156,7 +156,7 @@ export const useWallet = () => {
     txnGroup: algosdk.Transaction[],
     indexesToSign: number[]
   ): Promise<Uint8Array[]> => {
-    const wallet = activeWallet()
+    const wallet = avmActiveWallet()
     if (!wallet) {
       throw new Error('No active wallet')
     }
@@ -164,7 +164,7 @@ export const useWallet = () => {
   }
 
   const signData = (data: string, metadata: SignMetadata): Promise<SignDataResponse> => {
-    const wallet = activeWallet()
+    const wallet = avmActiveWallet()
     if (!wallet) {
       throw new Error('No active wallet')
     }
@@ -175,13 +175,13 @@ export const useWallet = () => {
     wallets: manager().wallets,
     isReady,
     algodClient,
-    activeWallet,
-    activeWalletAccounts,
-    activeWalletAddresses,
-    activeWalletState,
+    avmActiveWallet,
+    avmActiveWalletAccounts,
+    avmActiveWalletAddresses,
+    avmActiveWalletState,
     activeAccount,
     activeAddress,
-    activeWalletId,
+    avmActiveWalletId,
     isWalletActive,
     isWalletConnected,
     signData,

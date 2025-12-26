@@ -10,7 +10,7 @@ import {
   useNetwork,
   useWallet,
   type Wallet
-} from '@txnlab/use-wallet-react'
+} from 'avm-wallet-react'
 import algosdk from 'algosdk'
 import { canonify } from 'canonify'
 import * as React from 'react'

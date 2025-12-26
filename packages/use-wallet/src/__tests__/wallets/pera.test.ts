@@ -173,7 +173,7 @@ describe('PeraWallet', () => {
       // Set Defly as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -210,7 +210,7 @@ describe('PeraWallet', () => {
       // Set Defly as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -230,7 +230,7 @@ describe('PeraWallet', () => {
       // Set Pera as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.PERA
+        avmActiveWallet: WalletId.PERA
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -249,7 +249,7 @@ describe('PeraWallet', () => {
       // Set Defly as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.DEFLY
+        avmActiveWallet: WalletId.DEFLY
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -270,7 +270,7 @@ describe('PeraWallet', () => {
       // Set Pera as the active wallet
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.PERA
+        avmActiveWallet: WalletId.PERA
       }))
 
       const manageWalletConnectSessionSpy = vi.spyOn(wallet, 'manageWalletConnectSession' as any)
@@ -453,7 +453,7 @@ describe('PeraWallet', () => {
 
       store = new Store<State>({
         ...DEFAULT_STATE,
-        activeWallet: WalletId.DEFLY,
+        avmActiveWallet: WalletId.DEFLY,
         wallets: {
           [WalletId.PERA]: walletState
         }
@@ -505,7 +505,7 @@ describe('PeraWallet', () => {
         // Set up another active wallet
         store.setState((state) => ({
           ...state,
-          activeWallet: WalletId.DEFLY,
+          avmActiveWallet: WalletId.DEFLY,
           wallets: {
             [WalletId.DEFLY]: {
               accounts: [account2],
@@ -551,7 +551,7 @@ describe('PeraWallet', () => {
       await wallet.connect()
       wallet.setActive()
 
-      expect(store.state.activeWallet).toBe(WalletId.PERA)
+      expect(store.state.avmActiveWallet).toBe(WalletId.PERA)
       expect(StorageAdapter.setItem).toHaveBeenCalledWith('walletconnect', mockWalletConnectData)
       expect(StorageAdapter.removeItem).toHaveBeenCalledWith(`walletconnect-${WalletId.PERA}`)
     })
@@ -562,7 +562,7 @@ describe('PeraWallet', () => {
 
       store.setState((state) => ({
         ...state,
-        activeWallet: WalletId.DEFLY,
+        avmActiveWallet: WalletId.DEFLY,
         wallets: {
           ...state.wallets,
           [WalletId.DEFLY]: { accounts: [account1], activeAccount: account1 },
@@ -576,7 +576,7 @@ describe('PeraWallet', () => {
 
       expect(manageWalletConnectSessionSpy).toHaveBeenCalledWith('backup', WalletId.DEFLY)
       expect(manageWalletConnectSessionSpy).toHaveBeenCalledWith('restore')
-      expect(store.state.activeWallet).toBe(WalletId.PERA)
+      expect(store.state.avmActiveWallet).toBe(WalletId.PERA)
     })
   })
 

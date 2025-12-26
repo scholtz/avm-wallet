@@ -1,5 +1,5 @@
 import { useStore } from '@tanstack/vue-store'
-import { WalletManager, type AlgodConfig } from '@txnlab/use-wallet'
+import { WalletManager, type AlgodConfig } from 'avm-wallet'
 import algosdk from 'algosdk'
 import { computed, inject, ref } from 'vue'
 import type { SetAlgodClient } from './useWallet'

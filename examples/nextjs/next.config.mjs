@@ -1,4 +1,4 @@
-import { webpackFallback } from '@txnlab/use-wallet-react'
+import { webpackFallback } from 'avm-wallet-react'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

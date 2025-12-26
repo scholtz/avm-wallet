@@ -56,7 +56,7 @@ export class DeflyWallet extends BaseWallet {
 
   public connect = async (): Promise<WalletAccount[]> => {
     this.logger.info('Connecting...')
-    const currentActiveWallet = this.store.state.activeWallet
+    const currentActiveWallet = this.store.state.avmActiveWallet
     if (currentActiveWallet && currentActiveWallet !== this.id) {
       this.manageWalletConnectSession('backup', currentActiveWallet)
     }
@@ -96,7 +96,7 @@ export class DeflyWallet extends BaseWallet {
     this.logger.info('Disconnecting...')
     const client = this.client || (await this.initializeClient())
 
-    const currentActiveWallet = this.store.state.activeWallet
+    const currentActiveWallet = this.store.state.avmActiveWallet
     if (currentActiveWallet && currentActiveWallet !== this.id) {
       this.manageWalletConnectSession('backup', currentActiveWallet)
       this.manageWalletConnectSession('restore', this.id)
@@ -114,7 +114,7 @@ export class DeflyWallet extends BaseWallet {
 
   public setActive = (): void => {
     this.logger.info(`Set active wallet: ${this.id}`)
-    const currentActiveWallet = this.store.state.activeWallet
+    const currentActiveWallet = this.store.state.avmActiveWallet
     if (currentActiveWallet && currentActiveWallet === WalletId.PERA) {
       this.manageWalletConnectSession('backup', currentActiveWallet)
     }
@@ -134,7 +134,7 @@ export class DeflyWallet extends BaseWallet {
       }
 
       // If Pera is active, skip reconnectSession for Defly
-      if (state.activeWallet === WalletId.PERA) {
+      if (state.avmActiveWallet === WalletId.PERA) {
         this.logger.info('Skipping reconnectSession for Defly (inactive)')
         return
       }

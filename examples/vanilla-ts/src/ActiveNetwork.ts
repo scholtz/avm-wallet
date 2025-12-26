@@ -1,4 +1,4 @@
-import { NetworkId, WalletManager } from '@txnlab/use-wallet'
+import { NetworkId, WalletManager } from 'avm-wallet'
 
 export class ActiveNetwork {
   manager: WalletManager

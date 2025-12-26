@@ -1,4 +1,4 @@
-import { AlgodConfig, NetworkId, useNetwork } from '@txnlab/use-wallet-react'
+import { AlgodConfig, NetworkId, useNetwork } from 'avm-wallet-react'
 import * as React from 'react'
 
 export function NetworkControls() {

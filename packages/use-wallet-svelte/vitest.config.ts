@@ -5,7 +5,7 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
-      name: 'use-wallet-svelte',
+      name: 'avm-wallet-svelte',
       dir: './src',
       watch: false,
       environment: 'jsdom',

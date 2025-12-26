@@ -7,7 +7,7 @@ import {
   type WalletId,
   type SignMetadata,
   type SignDataResponse
-} from '@txnlab/use-wallet'
+} from 'avm-wallet'
 import algosdk from 'algosdk'
 import { computed, inject, ref } from 'vue'
 
@@ -42,7 +42,7 @@ export function useWallet() {
   const isReady = computed(() => managerStatus.value === 'ready')
 
   const walletStateMap = useStore(manager.store, (state) => state.wallets)
-  const activeWalletId = useStore(manager.store, (state) => state.activeWallet)
+  const avmActiveWalletId = useStore(manager.store, (state) => state.avmActiveWallet)
 
   const transformToWallet = (wallet: BaseWallet): Wallet => {
     const walletState = walletStateMap.value[wallet.id]
@@ -52,7 +52,7 @@ export function useWallet() {
       accounts: walletState?.accounts ?? [],
       activeAccount: walletState?.activeAccount ?? null,
       isConnected: !!walletState,
-      isActive: wallet.id === activeWalletId.value,
+      isActive: wallet.id === avmActiveWalletId.value,
       canSignData: wallet.canSignData ?? false,
       connect: (args) => wallet.connect(args),
       disconnect: () => wallet.disconnect(),
@@ -65,30 +65,30 @@ export function useWallet() {
     return [...manager.wallets.values()].map(transformToWallet)
   })
 
-  const activeWallet = computed(() => {
-    const wallet = activeWalletId.value ? manager.getWallet(activeWalletId.value) || null : null
+  const avmActiveWallet = computed(() => {
+    const wallet = avmActiveWalletId.value ? manager.getWallet(avmActiveWalletId.value) || null : null
     return wallet ? transformToWallet(wallet) : null
   })
 
   const activeBaseWallet = computed(() => {
-    return activeWalletId.value ? manager.getWallet(activeWalletId.value) || null : null
+    return avmActiveWalletId.value ? manager.getWallet(avmActiveWalletId.value) || null : null
   })
 
-  const activeWalletState = computed(() => {
-    const wallet = activeWallet.value
+  const avmActiveWalletState = computed(() => {
+    const wallet = avmActiveWallet.value
     return wallet ? walletStateMap.value[wallet.id] || null : null
   })
 
-  const activeWalletAccounts = computed(() => {
-    return activeWalletState.value?.accounts ?? null
+  const avmActiveWalletAccounts = computed(() => {
+    return avmActiveWalletState.value?.accounts ?? null
   })
 
-  const activeWalletAddresses = computed(() => {
-    return activeWalletAccounts.value?.map((account) => account.address) ?? null
+  const avmActiveWalletAddresses = computed(() => {
+    return avmActiveWalletAccounts.value?.map((account) => account.address) ?? null
   })
 
   const activeAccount = computed(() => {
-    return activeWalletState.value?.activeAccount ?? null
+    return avmActiveWalletState.value?.activeAccount ?? null
   })
 
   const activeAddress = computed(() => {
@@ -131,9 +131,9 @@ export function useWallet() {
       }
       return algodClient.value
     }),
-    activeWallet,
-    activeWalletAccounts,
-    activeWalletAddresses,
+    avmActiveWallet,
+    avmActiveWalletAccounts,
+    avmActiveWalletAddresses,
     activeAccount,
     activeAddress,
     signData,

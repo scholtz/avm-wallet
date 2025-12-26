@@ -11,7 +11,7 @@ import {
   DEFAULT_STATE,
   type State,
   type WalletAccount
-} from '@txnlab/use-wallet'
+} from 'avm-wallet'
 import { mount } from '@vue/test-utils'
 import algosdk from 'algosdk'
 import { inject, nextTick, ref, type InjectionKey } from 'vue'
@@ -39,8 +39,8 @@ const mocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@txnlab/use-wallet', async (importOriginal) => {
-  const mod = await importOriginal<typeof import('@txnlab/use-wallet')>()
+vi.mock('avm-wallet', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('avm-wallet')>()
   return {
     ...mod,
     DeflyWallet: class extends mod.BaseWallet {
@@ -73,7 +73,7 @@ const mockAlgodClient = ref(new algosdk.Algodv2('', 'https://testnet-api.algonod
 const setupMocks = () => {
   mockStore = new Store<State>({
     activeNetwork: NetworkId.TESTNET,
-    activeWallet: null,
+    avmActiveWallet: null,
     algodClient: new algosdk.Algodv2('', 'https://testnet-api.algonode.cloud', ''),
     managerStatus: 'ready',
     wallets: {},
@@ -119,7 +119,7 @@ beforeEach(() => {
   mockStore.setState((state) => ({
     ...state,
     activeNetwork: NetworkId.TESTNET,
-    activeWallet: null,
+    avmActiveWallet: null,
     algodClient: new algosdk.Algodv2('', 'https://testnet-api.algonode.cloud', ''),
     managerStatus: 'ready',
     wallets: {}
@@ -180,10 +180,10 @@ describe('useWallet', () => {
   })
 
   it('initializes wallets and active wallet correctly', () => {
-    const { wallets, activeWallet, activeAccount } = useWallet()
+    const { wallets, avmActiveWallet, activeAccount } = useWallet()
 
     expect(wallets.value).toEqual(mockWallets)
-    expect(activeWallet.value).toBeNull()
+    expect(avmActiveWallet.value).toBeNull()
     expect(activeAccount.value).toBeNull()
   })
 
@@ -238,7 +238,7 @@ describe('useWallet', () => {
           }
         }
       },
-      activeWallet: WalletId.DEFLY
+      avmActiveWallet: WalletId.DEFLY
     }))
 
     // Simulate signTransactions and transactionSigner
@@ -272,7 +272,7 @@ describe('useWallet', () => {
           }
         }
       },
-      activeWallet: WalletId.DEFLY
+      avmActiveWallet: WalletId.DEFLY
     }))
 
     expect(wallets.value).toEqual([
@@ -300,7 +300,7 @@ describe('useWallet', () => {
   })
 
   it('integrates correctly with Vue component', async () => {
-    const { wallets, activeWallet, activeAddress, isReady } = useWallet()
+    const { wallets, avmActiveWallet, activeAddress, isReady } = useWallet()
 
     const TestComponent = {
       template: `
@@ -311,14 +311,14 @@ describe('useWallet', () => {
               {{ wallet.metadata.name }}
             </li>
           </ul>
-          <div data-testid="activeWallet">{{ activeWallet?.id }}</div>
+          <div data-testid="avmActiveWallet">{{ avmActiveWallet?.id }}</div>
           <div data-testid="activeAddress">{{ activeAddress }}</div>
         </div>
       `,
       setup() {
         return {
           wallets,
-          activeWallet,
+          avmActiveWallet,
           activeAddress,
           isReady
         }
@@ -334,10 +334,10 @@ describe('useWallet', () => {
       expect(listItems[index].text()).toBe(wallet.metadata.name)
     })
 
-    expect(activeWallet.value).toBeNull()
+    expect(avmActiveWallet.value).toBeNull()
     expect(activeAddress.value).toBeNull()
 
-    expect(wrapper.get('[data-testid="activeWallet"]').text()).toBe('')
+    expect(wrapper.get('[data-testid="avmActiveWallet"]').text()).toBe('')
     expect(wrapper.get('[data-testid="activeAddress"]').text()).toBe('')
 
     // Mock a state change in the store
@@ -357,7 +357,7 @@ describe('useWallet', () => {
           }
         }
       },
-      activeWallet: WalletId.DEFLY
+      avmActiveWallet: WalletId.DEFLY
     }))
 
     // Force a re-render of the component
@@ -365,10 +365,10 @@ describe('useWallet', () => {
       wrapper.vm.$forceUpdate()
     })
 
-    expect(activeWallet.value?.id).toBe(WalletId.DEFLY)
+    expect(avmActiveWallet.value?.id).toBe(WalletId.DEFLY)
     expect(activeAddress.value).toBe('address1')
 
-    expect(wrapper.get('[data-testid="activeWallet"]').text()).toBe(WalletId.DEFLY)
+    expect(wrapper.get('[data-testid="avmActiveWallet"]').text()).toBe(WalletId.DEFLY)
     expect(wrapper.get('[data-testid="activeAddress"]').text()).toBe('address1')
   })
 
