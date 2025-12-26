@@ -28,6 +28,28 @@ export const DEFAULT_NETWORK_CONFIG: Record<string, NetworkConfig> = {
     genesisId: 'mainnet-v1.0',
     caipChainId: 'algorand:wGHE2Pwdvd7S12BL5FaOP20EGYesN73k'
   },
+  voimain: {
+    algod: {
+      token: '',
+      baseServer: 'https://mainnet-api.voi.nodely.dev',
+      headers: {}
+    },
+    isTestnet: false,
+    genesisHash: 'r20fSQI8gWe/kFZziNonSPCXLwcQmH/nxROvnnueWOk=',
+    genesisId: 'voimain-v1.0',
+    caipChainId: 'algorand:r20fSQI8gWe_kFZziNonSPCXLwcQmH_n'
+  },
+  aramidmain: {
+    algod: {
+      token: '',
+      baseServer: 'https://aramidmain-algod-public.de.nodes.biatec.io',
+      headers: {}
+    },
+    isTestnet: false,
+    genesisHash: 'PgeQVJJgx/LYKJfIEz7dbfNPuXmDyJ+O7FwQ4XL9tE8=',
+    genesisId: 'aramidmain-v1.0',
+    caipChainId: 'algorand:PgeQVJJgx_LYKJfIEz7dbfNPuXmDyJ-O'
+  },
   testnet: {
     algod: {
       token: '',
@@ -95,6 +117,36 @@ export class NetworkConfigBuilder {
       caipChainId: DEFAULT_NETWORK_CONFIG.mainnet.caipChainId!,
       algod: {
         ...DEFAULT_NETWORK_CONFIG.mainnet.algod,
+        ...(config.algod || {})
+      }
+    })
+    return this
+  }
+
+  voimain(config: DefaultNetworkConfig) {
+    this.networks.set('voimain', {
+      ...DEFAULT_NETWORK_CONFIG.voimain,
+      ...config,
+      genesisHash: DEFAULT_NETWORK_CONFIG.voimain.genesisHash!,
+      genesisId: DEFAULT_NETWORK_CONFIG.voimain.genesisId!,
+      caipChainId: DEFAULT_NETWORK_CONFIG.voimain.caipChainId!,
+      algod: {
+        ...DEFAULT_NETWORK_CONFIG.voimain.algod,
+        ...(config.algod || {})
+      }
+    })
+    return this
+  }
+
+  aramidmain(config: DefaultNetworkConfig) {
+    this.networks.set('aramidmain', {
+      ...DEFAULT_NETWORK_CONFIG.aramidmain,
+      ...config,
+      genesisHash: DEFAULT_NETWORK_CONFIG.aramidmain.genesisHash!,
+      genesisId: DEFAULT_NETWORK_CONFIG.aramidmain.genesisId!,
+      caipChainId: DEFAULT_NETWORK_CONFIG.aramidmain.caipChainId!,
+      algod: {
+        ...DEFAULT_NETWORK_CONFIG.aramidmain.algod,
         ...(config.algod || {})
       }
     })
@@ -217,6 +269,8 @@ export function isNetworkConfig(config: unknown): config is NetworkConfig {
 
 export enum NetworkId {
   MAINNET = 'mainnet',
+  VOIMAIN = 'voimain',
+  ARAMIDMAIN = 'aramidmain',
   TESTNET = 'testnet',
   BETANET = 'betanet',
   FNET = 'fnet',

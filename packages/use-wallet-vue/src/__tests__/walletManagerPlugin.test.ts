@@ -21,9 +21,9 @@ vi.mock('avm-wallet', async (importOriginal) => {
 describe('WalletManagerPlugin', () => {
   const TestComponent = defineComponent({
     setup() {
-      const walletManager = inject<WalletManager>('walletManager')
-      const algodClient = inject<algosdk.Algodv2>('algodClient')
-      const setAlgodClient = inject<SetAlgodClient>('setAlgodClient')
+      const walletManager = inject<WalletManager>('avmWalletManager')
+      const algodClient = inject<algosdk.Algodv2>('avmAlgodClient')
+      const setAlgodClient = inject<SetAlgodClient>('setAvmAlgodClient')
       return { walletManager, algodClient, setAlgodClient }
     },
     render() {

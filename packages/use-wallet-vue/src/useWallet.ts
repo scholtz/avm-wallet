@@ -28,8 +28,8 @@ export interface Wallet {
 export type SetAlgodClient = (client: algosdk.Algodv2) => void
 
 export function useWallet() {
-  const manager = inject<WalletManager>('walletManager')
-  const algodClient = inject<ReturnType<typeof ref<algosdk.Algodv2>>>('algodClient')
+  const manager = inject<WalletManager>('avmWalletManager')
+  const algodClient = inject<ReturnType<typeof ref<algosdk.Algodv2>>>('avmAlgodClient')
 
   if (!manager) {
     throw new Error('WalletManager plugin is not properly installed')

@@ -5,9 +5,9 @@ import { computed, inject, ref } from 'vue'
 import type { SetAlgodClient } from './useWallet'
 
 export function useNetwork() {
-  const manager = inject<WalletManager>('walletManager')
-  const algodClient = inject<ReturnType<typeof ref<algosdk.Algodv2>>>('algodClient')
-  const setAlgodClient = inject<SetAlgodClient>('setAlgodClient')
+  const manager = inject<WalletManager>('avmWalletManager')
+  const algodClient = inject<ReturnType<typeof ref<algosdk.Algodv2>>>('avmAlgodClient')
+  const setAlgodClient = inject<SetAlgodClient>('setAvmAlgodClient')
 
   if (!manager) {
     throw new Error('WalletManager plugin is not properly installed')

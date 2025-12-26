@@ -33,3 +33,12 @@ find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~SetAVMState~SetS
 find examples -type f -name "*" -print0 | xargs -0 sed -i -e "s~SetAVMState~SetState~g"
 
 find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~Doug Richar <drichar@gmail.com>~Doug Richar <drichar@gmail.com>, Ludovit Scholtz <ludovit __at__ scholtz.sk>~g"
+
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~app.provide('wallet~app.provide('avmWallet~g"
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~app.provide('algod~app.provide('avmAlgod~g"
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~app.provide('setAlgodClient~app.provide('setAvmAlgodClient~g"
+
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~inject<WalletManager>('walletManager')~inject<WalletManager>('avmWalletManager')~g"
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~inject<algosdk.Algodv2>('algodClient')~inject<algosdk.Algodv2>('avmAlgodClient')~g"
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~inject<ReturnType<typeof ref<algosdk.Algodv2>>>('algodClient')~inject<ReturnType<typeof ref<algosdk.Algodv2>>>('avmAlgodClient')~g"
+find packages -type f -name "*" -print0 | xargs -0 sed -i -e "s~inject<SetAlgodClient>('setAlgodClient')~inject<SetAlgodClient>('setAvmAlgodClient')~g"

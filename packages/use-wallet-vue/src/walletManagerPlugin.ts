@@ -12,9 +12,9 @@ export const WalletManagerPlugin = {
       manager.algodClient = client
     }
 
-    app.provide('walletManager', manager)
-    app.provide('algodClient', algodClient)
-    app.provide('setAlgodClient', setAlgodClient)
+    app.provide('avmWalletManager', manager)
+    app.provide('avmAlgodClient', algodClient)
+    app.provide('setAvmAlgodClient', setAlgodClient)
 
     manager.resumeSessions().catch((error) => {
       console.error('Error resuming sessions:', error)
