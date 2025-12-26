@@ -203,7 +203,7 @@ WalletId.BIATEC
 #### Liquid Auth (experimental)
 
  {% hint style="warning" %}
- Due to an unresolved issue with its peer dependencies, as of use-wallet v4.3.1 the Liquid Auth provider is not supported. Support will be restored when the issue is resolved.
+ Due to an unresolved issue with its peer dependencies, as of use-wallet v4.3.2 the Liquid Auth provider is not supported. Support will be restored when the issue is resolved.
  {% endhint %}
 
  Liquid Auth is a self-hosted authentication service that provides a simple way to associate Passkeys to spending KeyPairs commonly found in cryptocurrencies, in accordance with the FIDO2 WebAuthn specification. In addition to authentication, Liquid Auth provides a Peer to Peer signaling service.
